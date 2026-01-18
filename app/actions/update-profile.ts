@@ -176,7 +176,7 @@ export async function updateProfile(
         };
         
         if (musicUrl !== null) {
-          const finalMusicUrl = musicUrl.toString().trim() !== "" ? musicUrl.toString().trim() : null;
+          const finalMusicUrl = musicUrl.toString().trim() !== "" ? musicUrl.toString().trim() : undefined;
           finalModules.music.url = finalMusicUrl;
         }
         
