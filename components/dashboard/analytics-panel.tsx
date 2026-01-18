@@ -218,31 +218,7 @@ export function AnalyticsPanel({ profile }: AnalyticsPanelProps) {
       )}
 
       {/* Coming Soon */}
-      <div className="p-6 rounded-2xl bg-purple-500/5 border border-purple-500/10">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-            <Clock className="w-5 h-5 text-purple-400" />
-          </div>
-          <div>
-            <h4 className="font-mono text-neutral-200">Скоро будет доступно</h4>
-            <p className="text-xs font-mono text-neutral-500">Расширенная аналитика в разработке</p>
-          </div>
-        </div>
-        <ul className="text-sm font-mono text-neutral-400 space-y-2">
-          <li className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-            Графики посещений по дням
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-            Геолокация посетителей
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-            Экспорт данных
-          </li>
-        </ul>
-      </div>
+      
     </div>
   );
 }
