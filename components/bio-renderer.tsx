@@ -11,6 +11,7 @@ import {
   Sparkles,
   Link as LinkIcon
 } from "lucide-react";
+import Link from "next/link";
 
 interface BioRendererProps {
   profile: Profile;
@@ -578,7 +579,7 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
                 transition={{ delay: 1 }}
                 className="mt-6 text-center"
               >
-                <a 
+                <Link 
                   href="/"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs transition-all hover:opacity-80"
                   style={{ 
@@ -588,7 +589,7 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
                 >
                   <Sparkles className="w-3 h-3" />
                   Создано на bio.lonestill.uk
-                </a>
+                </Link>
               </motion.div>
             </motion.div>
           )}
