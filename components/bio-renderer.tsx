@@ -463,15 +463,6 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
                           boxShadow: `0 0 40px ${primaryColor}40`,
                         }}
                       />
-                      {/* Online indicator */}
-                      <div 
-                        className="absolute bottom-1 right-1 w-5 h-5 rounded-full border-2"
-                        style={{
-                          backgroundColor: "#22c55e",
-                          borderColor: backgroundColor,
-                          boxShadow: "0 0 10px #22c55e80",
-                        }}
-                      />
                     </div>
                   </motion.div>
                 )}
