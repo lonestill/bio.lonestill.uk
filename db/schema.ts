@@ -1,5 +1,8 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
+// Badge types
+export type BadgeType = "bughunter" | "hacker" | "early_adopter" | "premium";
+
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   uid: integer("uid"), // Numeric user ID for display (unique via index)
@@ -7,6 +10,7 @@ export const users = sqliteTable("users", {
   email: text("email"),
   passwordHash: text("password_hash").notNull(),
   role: text("role").notNull().default("user"), // 'user' | 'admin' | 'premium'
+  badges: text("badges", { mode: "json" }).$type<BadgeType[]>(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),

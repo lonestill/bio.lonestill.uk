@@ -1,7 +1,7 @@
 import { lucia } from "@/lib/auth";
 import { SESSION_COOKIE_NAME } from "@/lib/auth-config";
 import { db } from "@/db";
-import { profiles, users, profileViews, linkClicks } from "@/db/schema";
+import { profiles, users, profileViews, linkClicks, BadgeType } from "@/db/schema";
 import { eq, sql, and, gte } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -12,6 +12,7 @@ import { DesignPanel } from "@/components/dashboard/design-panel";
 import { EffectsPanel } from "@/components/dashboard/effects-panel";
 import { LinksPanel } from "@/components/dashboard/links-panel";
 import { AnalyticsPanel } from "@/components/dashboard/analytics-panel";
+import { BadgesPanel } from "@/components/dashboard/badges-panel";
 
 interface PageProps {
   searchParams: Promise<{ tab?: string }>;
@@ -74,6 +75,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   // CTR = (clicks / views) * 100
   const ctr = totalViews > 0 ? Math.round((totalClicks / totalViews) * 100) : 0;
 
+  // User badges
+  const userBadges: BadgeType[] = user.badges || [];
+
   const renderPanel = () => {
     switch (activeTab) {
       case "profile":
@@ -84,6 +88,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         return <EffectsPanel profile={profile} />;
       case "links":
         return <LinksPanel profile={profile} />;
+      case "badges":
+        return <BadgesPanel userBadges={userBadges} username={user.username} profile={profile} />;
       case "analytics":
         return <AnalyticsPanel profile={profile} />;
       default:

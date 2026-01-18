@@ -2,14 +2,18 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Profile } from "@/db/schema";
+import { Profile, BadgeType } from "@/db/schema";
 import { 
   Eye, 
   Hash, 
   Calendar,
   ExternalLink,
   Sparkles,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Bug,
+  Terminal,
+  Star,
+  Crown
 } from "lucide-react";
 import Link from "next/link";
 
@@ -18,7 +22,16 @@ interface BioRendererProps {
   username: string;
   numericUid?: number;
   createdAt?: Date;
+  badges?: BadgeType[];
 }
+
+// Badge info for rendering
+const BADGE_INFO: Record<BadgeType, { name: string; icon: React.ReactNode; color: string }> = {
+  bughunter: { name: "Bug Hunter", icon: <Bug className="w-3.5 h-3.5" />, color: "#ef4444" },
+  hacker: { name: "Hacker", icon: <Terminal className="w-3.5 h-3.5" />, color: "#22c55e" },
+  early_adopter: { name: "Early Adopter", icon: <Star className="w-3.5 h-3.5" />, color: "#f59e0b" },
+  premium: { name: "Premium", icon: <Crown className="w-3.5 h-3.5" />, color: "#a855f7" },
+};
 
 // Get favicon URL from Google's free API
 function getFaviconUrl(url: string): string {
@@ -155,7 +168,7 @@ function getLinkStylesStatic(linkStyle: string, primaryColor: string, secondaryC
   }
 }
 
-export function BioRenderer({ profile, username, numericUid, createdAt }: BioRendererProps) {
+export function BioRenderer({ profile, username, numericUid, createdAt, badges = [] }: BioRendererProps) {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [hasTrackedView, setHasTrackedView] = useState(false);
   const [bioText, setBioText] = useState("");
@@ -241,6 +254,8 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
   const showFavicons = display.showFavicons !== false; // По умолчанию включено
   const avatarShape = display.avatarShape || "circle";
   const typewriterEffect = modules.effects?.typewriter || false;
+  const showBadges = display.showBadges !== false; // По умолчанию включено
+  const visibleBadges: BadgeType[] = display.visibleBadges !== undefined ? display.visibleBadges : badges;
   
   // Theme
   const themeColors = profile.themeConfig?.colors || {};
@@ -483,7 +498,7 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm mb-4 ${layout === "centered" ? "" : ""}`}
+                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm mb-2 ${layout === "centered" ? "" : ""}`}
                   style={{
                     backgroundColor: `${primaryColor}20`,
                     color: `${textColor}90`,
@@ -492,6 +507,38 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
                   <span className="opacity-60">@</span>
                   {username}
                 </motion.div>
+
+                {/* User badges */}
+                {showBadges && visibleBadges.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.42 }}
+                    className={`flex flex-wrap gap-2 mb-4 ${layout === "centered" ? "justify-center" : ""}`}
+                  >
+                    {visibleBadges.map((badge) => {
+                      const info = BADGE_INFO[badge];
+                      if (!info) return null;
+                      // Only show badges that user actually has
+                      if (!badges.includes(badge)) return null;
+                      return (
+                        <div
+                          key={badge}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                          style={{
+                            backgroundColor: `${info.color}20`,
+                            color: info.color,
+                            border: `1px solid ${info.color}40`,
+                          }}
+                          title={info.name}
+                        >
+                          {info.icon}
+                          <span>{info.name}</span>
+                        </div>
+                      );
+                    })}
+                  </motion.div>
+                )}
 
                 {/* Stats row */}
                 {(showUid || showViews || showCreatedAt) && (

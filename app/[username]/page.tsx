@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { db } from "@/db";
-import { profiles, users } from "@/db/schema";
+import { profiles, users, BadgeType } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import { BioRenderer } from "@/components/bio-renderer";
@@ -58,6 +58,7 @@ export default async function UserProfilePage({ params }: PageProps) {
   }
 
   const { profiles: profileData, users: userData } = data;
+  const userBadges: BadgeType[] = userData.badges || [];
 
   return (
     <main className="h-screen w-screen overflow-hidden">
@@ -66,6 +67,7 @@ export default async function UserProfilePage({ params }: PageProps) {
         username={userData.username}
         numericUid={userData.uid ?? undefined}
         createdAt={userData.createdAt}
+        badges={userBadges}
       />
     </main>
   );
