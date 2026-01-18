@@ -54,9 +54,11 @@ export function ConnectionsPanel({ profile }: ConnectionsPanelProps) {
       maxRepos: github.maxRepos || 3,
     },
     spotify: {
-      connected: !!spotify.username,
+      connected: !!spotify.connected || !!spotify.username,
       username: spotify.username || "",
       enabled: spotify.enabled !== false,
+      showCurrentTrack: spotify.showCurrentTrack !== false,
+      showTopTracks: spotify.showTopTracks || false,
     },
     discord: {
       connected: !!discord.userId,
@@ -100,6 +102,26 @@ export function ConnectionsPanel({ profile }: ConnectionsPanelProps) {
 
       formAction(formData);
     });
+  };
+
+  const handleDisconnect = async (service: string) => {
+    if (service === "spotify") {
+      // Clear Spotify connection
+      const updated = {
+        connected: false,
+        username: "",
+        enabled: false,
+        showCurrentTrack: false,
+        showTopTracks: false,
+      };
+      setConnections({ ...connections, spotify: updated });
+      
+      // Save to profile
+      handleSave("spotify", { connected: false, enabled: false });
+      
+      // Delete tokens from server
+      await fetch("/api/auth/spotify/disconnect", { method: "POST" });
+    }
   };
 
   useEffect(() => {
@@ -266,7 +288,7 @@ export function ConnectionsPanel({ profile }: ConnectionsPanelProps) {
         )}
       </div>
 
-      {/* Spotify Connection */}
+      {/* Spotify Connection - Temporarily Disabled */}
       <div className="p-5 rounded-xl bg-neutral-900/50 border border-neutral-800 opacity-60">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -276,27 +298,23 @@ export function ConnectionsPanel({ profile }: ConnectionsPanelProps) {
             <div>
               <h3 className="text-lg font-mono font-semibold text-white">Spotify</h3>
               <p className="text-sm font-mono text-neutral-500">
-                {connections.spotify.connected
-                  ? `Подключен как ${connections.spotify.username}`
-                  : "Показывайте что сейчас слушаете"}
+                Показывайте что сейчас слушаете
               </p>
             </div>
           </div>
-          <div
-            className={`toggle-switch ${connections.spotify.enabled ? "active" : ""}`}
-            onClick={() => {
-              if (!connections.spotify.connected) return;
-              const updated = {
-                ...connections.spotify,
-                enabled: !connections.spotify.enabled,
-              };
-              setConnections({ ...connections, spotify: updated });
-              handleSave("spotify", updated);
-            }}
-          />
         </div>
 
-        {!connections.spotify.connected ? (
+        <div className="space-y-3">
+          <div className="flex items-start gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <div className="text-sm font-mono">
+              <p className="font-medium">Временно недоступно</p>
+              <p className="text-amber-400/70 text-xs mt-1">
+                Spotify приостановил регистрацию новых интеграций. Ожидаем восстановления доступа.
+              </p>
+            </div>
+          </div>
+          
           <button
             disabled
             className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-neutral-800/30 border border-neutral-700/50 rounded-xl font-mono text-neutral-500 cursor-not-allowed"
@@ -304,11 +322,7 @@ export function ConnectionsPanel({ profile }: ConnectionsPanelProps) {
             <Music className="w-4 h-4" />
             <span>Скоро</span>
           </button>
-        ) : (
-          <div className="text-sm font-mono text-neutral-500">
-            Настройки Spotify будут доступны после подключения
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Discord Connection */}

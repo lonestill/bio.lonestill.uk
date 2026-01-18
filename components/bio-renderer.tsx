@@ -17,9 +17,11 @@ import {
   Github,
   Code,
   GitBranch,
-  Users
+  Users,
+  Home
 } from "lucide-react";
 import Link from "next/link";
+import { SpotifyWidget } from "@/components/spotify-widget";
 
 // Normalize URL to ensure it has a protocol
 function normalizeUrl(url: string): string {
@@ -47,6 +49,7 @@ const BADGE_INFO: Record<BadgeType, { name: string; icon: React.ReactNode; color
   hacker: { name: "Hacker", icon: <Terminal className="w-3.5 h-3.5" />, color: "#22c55e" },
   early_adopter: { name: "Early Adopter", icon: <Star className="w-3.5 h-3.5" />, color: "#f59e0b" },
   premium: { name: "Premium", icon: <Crown className="w-3.5 h-3.5" />, color: "#a855f7" },
+  localhost: { name: "127.0.0.1", icon: <Home className="w-3.5 h-3.5" />, color: "#64748b" },
 };
 
 // Get favicon URL from Google's free API
@@ -383,6 +386,8 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const [bioText, setBioText] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const youtubePlayerRef = useRef<any>(null);
+  const youtubeContainerRef = useRef<HTMLDivElement>(null);
 
   // Track view on mount
   useEffect(() => {
@@ -417,15 +422,84 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const handleEnter = () => {
     setIsUnlocked(true);
     
-    if (audioRef.current && profile.modules?.music?.url) {
-      audioRef.current.volume = (profile.modules.music.volume || 30) / 100;
-      audioRef.current.play().catch(console.error);
-    }
-    
     if (videoRef.current) {
       videoRef.current.play().catch(console.error);
     }
   };
+
+  // Set audio volume when audio element is available
+  useEffect(() => {
+    if (isUnlocked && audioRef.current) {
+      const volume = (profile.modules?.music?.volume ?? 50) / 100;
+      audioRef.current.volume = volume;
+    }
+  }, [isUnlocked, profile.modules?.music?.volume]);
+
+  // Initialize YouTube Player with volume control
+  useEffect(() => {
+    const modules = profile.modules as any || {};
+    const musicUrl = modules.music?.url;
+    const volume = modules.music?.volume ?? 50;
+    
+    if (!isUnlocked || !musicUrl) return;
+    
+    const videoId = getYouTubeVideoId(musicUrl);
+    if (!videoId || !youtubeContainerRef.current) return;
+
+    // Load YouTube IFrame API
+    if (!(window as any).YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+    }
+
+    const initPlayer = () => {
+      if (youtubePlayerRef.current) {
+        youtubePlayerRef.current.destroy();
+      }
+      
+      youtubePlayerRef.current = new (window as any).YT.Player(youtubeContainerRef.current, {
+        videoId: videoId,
+        playerVars: {
+          autoplay: 1,
+          loop: 1,
+          playlist: videoId,
+          controls: 0,
+          showinfo: 0,
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: (event: any) => {
+            event.target.setVolume(volume);
+            event.target.playVideo();
+          },
+        },
+      });
+    };
+
+    if ((window as any).YT && (window as any).YT.Player) {
+      initPlayer();
+    } else {
+      (window as any).onYouTubeIframeAPIReady = initPlayer;
+    }
+
+    return () => {
+      if (youtubePlayerRef.current) {
+        youtubePlayerRef.current.destroy();
+        youtubePlayerRef.current = null;
+      }
+    };
+  }, [isUnlocked, profile.modules]);
+
+  // Update YouTube volume when it changes
+  useEffect(() => {
+    const volume = (profile.modules as any)?.music?.volume ?? 50;
+    if (youtubePlayerRef.current && youtubePlayerRef.current.setVolume) {
+      youtubePlayerRef.current.setVolume(volume);
+    }
+  }, [(profile.modules as any)?.music?.volume]);
 
   const getYouTubeVideoId = (url: string): string | null => {
     const patterns = [
@@ -474,6 +548,12 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const showGitHubPinnedRepos = github.showPinnedRepos !== false;
   const showGitHubStats = github.showStats !== false;
   const maxGitHubRepos = github.maxRepos || 3;
+
+  // Spotify settings
+  const spotify = modules.spotify || {};
+  const spotifyEnabled = spotify.enabled !== false && spotify.connected;
+  const showSpotifyCurrentTrack = spotify.showCurrentTrack !== false;
+  const showSpotifyTopTracks = spotify.showTopTracks || false;
   
   // Theme
   const themeColors = profile.themeConfig?.colors || {};
@@ -849,6 +929,16 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
                     layout={layout}
                   />
                 )}
+
+                {/* Spotify Widget */}
+                {spotifyEnabled && (
+                  <SpotifyWidget
+                    username={username}
+                    showCurrentTrack={showSpotifyCurrentTrack}
+                    showTopTracks={showSpotifyTopTracks}
+                    primaryColor={primaryColor}
+                  />
+                )}
               </div>
 
               {/* Footer badge */}
@@ -883,10 +973,9 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
       )}
 
       {isUnlocked && isYouTubeMusic && musicUrl && (
-        <iframe
-          src={`https://www.youtube.com/embed/${getYouTubeVideoId(musicUrl)}?autoplay=1&loop=1&playlist=${getYouTubeVideoId(musicUrl)}&controls=0&showinfo=0`}
-          className="hidden"
-          allow="autoplay"
+        <div 
+          ref={youtubeContainerRef}
+          className="fixed -top-[9999px] -left-[9999px] w-1 h-1 opacity-0 pointer-events-none"
         />
       )}
 

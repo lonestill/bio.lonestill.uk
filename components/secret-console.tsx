@@ -4,6 +4,37 @@ import { useEffect } from "react";
 
 export function SecretConsole() {
   useEffect(() => {
+    // Check if running on localhost
+    const isLocalhost = 
+      window.location.hostname === "localhost" || 
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.startsWith("192.168.") ||
+      window.location.hostname === "[::1]";
+
+    // Auto-claim localhost badge if on localhost
+    if (isLocalhost) {
+      console.log(
+        "%c🏠 Running on localhost - claiming developer badge...",
+        "color: #64748b; font-size: 14px;"
+      );
+      
+      fetch("/api/claim-badge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ badge: "localhost" }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            console.log(
+              "%c🏠 127.0.0.1 badge claimed!",
+              "color: #64748b; font-size: 14px; font-weight: bold;"
+            );
+          }
+        })
+        .catch(() => {});
+    }
+
     // Add secret message to console
     console.log(
       "%c🔍 Looking for secrets?",

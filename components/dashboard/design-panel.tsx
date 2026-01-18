@@ -284,7 +284,7 @@ export function DesignPanel({ profile }: DesignPanelProps) {
             <input
               type="range"
               min="0"
-              max="30"
+              max="20"
               step="1"
               value={themeConfig.blur}
               onChange={(e) => setThemeConfig({

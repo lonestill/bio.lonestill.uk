@@ -11,7 +11,8 @@ import {
   Check,
   Sparkles,
   Eye,
-  EyeOff
+  EyeOff,
+  Home
 } from "lucide-react";
 import { BadgeType, Profile } from "@/db/schema";
 import { updateProfile } from "@/app/actions/update-profile";
@@ -67,6 +68,14 @@ const ALL_BADGES: BadgeInfo[] = [
     icon: <Crown className="w-6 h-6" />,
     color: "#a855f7",
     hint: "Премиум подписка",
+  },
+  {
+    id: "localhost",
+    name: "127.0.0.1",
+    description: "Разработчик или тестировщик",
+    icon: <Home className="w-6 h-6" />,
+    color: "#64748b",
+    hint: "Только для локальной разработки",
   },
 ];
 

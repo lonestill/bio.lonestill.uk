@@ -1,7 +1,7 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 // Badge types
-export type BadgeType = "bughunter" | "hacker" | "early_adopter" | "premium";
+export type BadgeType = "bughunter" | "hacker" | "early_adopter" | "premium" | "localhost";
 
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
@@ -86,9 +86,22 @@ export const linkClicks = sqliteTable("link_clicks", {
     .$defaultFn(() => new Date()),
 });
 
+// Spotify tokens table
+export const spotifyTokens = sqliteTable("spotify_tokens", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  accessToken: text("access_token").notNull(),
+  refreshToken: text("refresh_token").notNull(),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+  spotifyUserId: text("spotify_user_id"),
+  spotifyDisplayName: text("spotify_display_name"),
+});
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
 export type NewProfile = typeof profiles.$inferInsert;
 export type ProfileView = typeof profileViews.$inferSelect;
 export type LinkClick = typeof linkClicks.$inferSelect;
+export type SpotifyToken = typeof spotifyTokens.$inferSelect;
