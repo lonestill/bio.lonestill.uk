@@ -27,6 +27,7 @@ interface BioRendererProps {
   numericUid?: number;
   createdAt?: Date;
   badges?: BadgeType[];
+  uniqueViews?: number;
 }
 
 // Badge info for rendering
@@ -364,7 +365,7 @@ function GitHubWidget({
   );
 }
 
-export function BioRenderer({ profile, username, numericUid, createdAt, badges = [] }: BioRendererProps) {
+export function BioRenderer({ profile, username, numericUid, createdAt, badges = [], uniqueViews = 0 }: BioRendererProps) {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [hasTrackedView, setHasTrackedView] = useState(false);
   const [bioText, setBioText] = useState("");
@@ -593,7 +594,13 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
 
       {/* Background blur overlay */}
       {backgroundBlur > 0 && (
-        <div className="absolute inset-0 z-[1]" style={{ backdropFilter: `blur(${backgroundBlur}px)` }} />
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="absolute inset-0 z-[1]" 
+          style={{ backdropFilter: `blur(${backgroundBlur}px)` }} 
+        />
       )}
 
       {/* Background Effects */}
@@ -757,7 +764,7 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
                     {showViews && (
                       <div className="flex items-center gap-1.5">
                         <Eye className="w-4 h-4" />
-                        <span>{Number(profile.views || 0).toLocaleString()}</span>
+                        <span>{uniqueViews.toLocaleString()}</span>
                       </div>
                     )}
                     {showUid && numericUid && (

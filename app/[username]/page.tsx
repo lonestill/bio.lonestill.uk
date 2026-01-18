@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { db } from "@/db";
-import { profiles, users, BadgeType } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { profiles, users, profileViews, BadgeType } from "@/db/schema";
+import { eq, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import { BioRenderer } from "@/components/bio-renderer";
 
@@ -60,6 +60,15 @@ export default async function UserProfilePage({ params }: PageProps) {
   const { profiles: profileData, users: userData } = data;
   const userBadges: BadgeType[] = userData.badges || [];
 
+  // Count unique views (unique visitors)
+  const uniqueViewsResult = await db
+    .select({ count: sql<number>`COUNT(DISTINCT ${profileViews.visitorHash})` })
+    .from(profileViews)
+    .where(eq(profileViews.profileUserId, userData.id))
+    .get();
+  
+  const uniqueViews = uniqueViewsResult?.count || 0;
+
   return (
     <main className="h-screen w-screen overflow-hidden">
       <BioRenderer 
@@ -68,6 +77,7 @@ export default async function UserProfilePage({ params }: PageProps) {
         numericUid={userData.uid ?? undefined}
         createdAt={userData.createdAt}
         badges={userBadges}
+        uniqueViews={uniqueViews}
       />
     </main>
   );

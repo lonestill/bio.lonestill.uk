@@ -70,6 +70,8 @@ export function LinksPanel({ profile }: LinksPanelProps) {
   const [isPending, startTransition] = useTransition();
   const [state, formAction] = useActionState(updateProfile, null);
   const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [saveCount, setSaveCount] = useState(0);
   
   const modules = (profile.modules || {}) as any;
   const display = modules.display || {};
@@ -110,7 +112,12 @@ export function LinksPanel({ profile }: LinksPanelProps) {
   useEffect(() => {
     if (state?.success) {
       setIsSavingSettings(false);
+      setShowSuccess(true);
+      setSaveCount(c => c + 1);
       router.refresh();
+      
+      const timer = setTimeout(() => setShowSuccess(false), 3000);
+      return () => clearTimeout(timer);
     }
     if (state?.error) {
       setIsSavingSettings(false);

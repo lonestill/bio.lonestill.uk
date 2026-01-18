@@ -32,6 +32,8 @@ export function DesignPanel({ profile }: DesignPanelProps) {
   const [state, formAction] = useActionState(updateProfile, null);
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [saveCount, setSaveCount] = useState(0);
   
   const [themeConfig, setThemeConfig] = useState({
     colors: {
@@ -47,7 +49,12 @@ export function DesignPanel({ profile }: DesignPanelProps) {
   useEffect(() => {
     if (state?.success) {
       setIsPending(false);
+      setShowSuccess(true);
+      setSaveCount(c => c + 1);
       router.refresh();
+      
+      const timer = setTimeout(() => setShowSuccess(false), 3000);
+      return () => clearTimeout(timer);
     }
     if (state?.error) {
       setIsPending(false);
@@ -324,8 +331,8 @@ export function DesignPanel({ profile }: DesignPanelProps) {
           </div>
         )}
 
-        {state?.success && (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 animate-scale-in">
+        {showSuccess && (
+          <div key={saveCount} className="flex items-center gap-3 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 animate-scale-in">
             <Check className="w-5 h-5 flex-shrink-0" />
             <span className="text-sm font-mono">Дизайн сохранён!</span>
           </div>

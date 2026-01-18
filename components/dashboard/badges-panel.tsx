@@ -74,6 +74,8 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
   const [hoveredBadge, setHoveredBadge] = useState<string | null>(null);
   const [state, formAction] = useActionState(updateProfile, null);
   const [isSaving, setIsSaving] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [saveCount, setSaveCount] = useState(0);
   const router = useRouter();
   
   const modules = (profile.modules || {}) as any;
@@ -90,7 +92,12 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
   useEffect(() => {
     if (state?.success) {
       setIsSaving(false);
+      setShowSuccess(true);
+      setSaveCount(c => c + 1);
       router.refresh();
+      
+      const timer = setTimeout(() => setShowSuccess(false), 3000);
+      return () => clearTimeout(timer);
     }
     if (state?.error) {
       setIsSaving(false);

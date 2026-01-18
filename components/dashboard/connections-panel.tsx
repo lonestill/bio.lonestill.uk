@@ -35,6 +35,8 @@ export function ConnectionsPanel({ profile }: ConnectionsPanelProps) {
   const router = useRouter();
   const [state, formAction] = useActionState(updateProfile, null);
   const [isPending, startTransition] = useTransition();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [saveCount, setSaveCount] = useState(0);
 
   const modules = (profile.modules || {}) as any;
   const github = modules.github || {};
@@ -102,7 +104,12 @@ export function ConnectionsPanel({ profile }: ConnectionsPanelProps) {
 
   useEffect(() => {
     if (state?.success) {
+      setShowSuccess(true);
+      setSaveCount(c => c + 1);
       router.refresh();
+      
+      const timer = setTimeout(() => setShowSuccess(false), 3000);
+      return () => clearTimeout(timer);
     }
   }, [state, router]);
 
@@ -357,8 +364,8 @@ export function ConnectionsPanel({ profile }: ConnectionsPanelProps) {
         </div>
       )}
 
-      {state?.success && (
-        <div className="flex items-center gap-3 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400">
+      {showSuccess && (
+        <div key={saveCount} className="flex items-center gap-3 p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 animate-scale-in">
           <Check className="w-5 h-5 flex-shrink-0" />
           <span className="text-sm font-mono">Настройки сохранены!</span>
         </div>
