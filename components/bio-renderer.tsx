@@ -21,6 +21,17 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// Normalize URL to ensure it has a protocol
+function normalizeUrl(url: string): string {
+  if (!url) return url;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  // Default to https:// if no protocol
+  return `https://${trimmed}`;
+}
+
 interface BioRendererProps {
   profile: Profile;
   username: string;
@@ -41,7 +52,8 @@ const BADGE_INFO: Record<BadgeType, { name: string; icon: React.ReactNode; color
 // Get favicon URL from Google's free API
 function getFaviconUrl(url: string): string {
   try {
-    const domain = new URL(url).hostname;
+    const normalizedUrl = normalizeUrl(url);
+    const domain = new URL(normalizedUrl).hostname;
     return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
   } catch {
     return "";
@@ -67,7 +79,7 @@ function LinkItem({
   
   return (
     <motion.a
-      href={social.url}
+      href={normalizeUrl(social.url)}
       target="_blank"
       rel="noopener noreferrer"
       initial={{ opacity: 0, x: -20 }}

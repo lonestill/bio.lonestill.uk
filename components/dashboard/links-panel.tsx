@@ -26,6 +26,16 @@ interface Link {
   label: string;
 }
 
+// Normalize URL to ensure it has a protocol
+function normalizeUrl(url: string): string {
+  if (!url) return url;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    return trimmed;
+  }
+  return `https://${trimmed}`;
+}
+
 interface LinksPanelProps {
   profile: Profile;
 }
@@ -161,11 +171,17 @@ export function LinksPanel({ profile }: LinksPanelProps) {
   const handleSaveLink = () => {
     if (!currentLink.url) return;
 
+    // Normalize URL before saving
+    const normalizedLink = {
+      ...currentLink,
+      url: normalizeUrl(currentLink.url),
+    };
+
     let newLinks = [...links];
     if (editingIndex !== null) {
-      newLinks[editingIndex] = currentLink;
+      newLinks[editingIndex] = normalizedLink;
     } else {
-      newLinks.push(currentLink);
+      newLinks.push(normalizedLink);
     }
 
     setLinks(newLinks);

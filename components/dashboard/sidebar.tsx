@@ -14,6 +14,7 @@ import {
   ExternalLink,
   Award,
   Plug,
+  Send,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -121,6 +122,15 @@ export function Sidebar({ username, displayName, avatarUrl }: SidebarProps) {
 
       {/* Bottom Section */}
       <div className="p-4 border-t border-purple-500/10">
+      <Link
+          href="https://t.me/gittyblog"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 w-full px-3 md:px-4 py-2 rounded-xl text-sm font-mono text-neutral-500 hover:text-sky-400 hover:bg-sky-500/10 transition-all group"
+        >
+          <Send className="w-4 h-4 text-neutral-600 group-hover:text-sky-400 transition-colors" />
+          <span>Блог разработчика</span>
+        </Link>
         <form action={logout}>
           <button
             type="submit"
