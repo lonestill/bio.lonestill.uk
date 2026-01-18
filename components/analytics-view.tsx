@@ -122,14 +122,7 @@ export function AnalyticsView({ profile }: AnalyticsViewProps) {
       )}
 
       {/* Coming Soon */}
-      <div className="mt-8 p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-lg text-center">
-        <div className="font-mono text-sm text-neutral-400 mb-2">
-          📊 Детальная аналитика в разработке
-        </div>
-        <div className="font-mono text-xs text-neutral-500">
-          Скоро будут доступны графики, временные периоды и экспорт данных
-        </div>
-      </div>
+      
     </div>
   );
 }

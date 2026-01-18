@@ -58,6 +58,7 @@ function LinkItem({
   username: string;
 }) {
   const [faviconFailed, setFaviconFailed] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   
   return (
     <motion.a
@@ -66,11 +67,16 @@ function LinkItem({
       rel="noopener noreferrer"
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.7 + index * 0.1 }}
-      whileHover={styles.hoverStyle as any}
+      transition={{ delay: 0.7 + index * 0.1, type: "spring", stiffness: 200, damping: 20 }}
+      whileHover={styles.hoverStyle}
       whileTap={{ scale: 0.98 }}
-      className={styles.className}
-      style={styles.style}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className={`${styles.className} transition-all duration-200`}
+      style={{
+        ...styles.style,
+        filter: isHovered ? "brightness(1.15)" : "brightness(1)",
+      }}
       onClick={async () => {
         try {
           await fetch(`/api/track-click?username=${username}&linkIndex=${index}`, {
@@ -92,28 +98,35 @@ function LinkItem({
       <span className="flex-1 font-medium">
         {social.label || social.platform || "Ссылка"}
       </span>
-      <ExternalLink className="w-4 h-4 opacity-50" />
+      <ExternalLink className={`w-4 h-4 transition-opacity duration-200 ${isHovered ? "opacity-80" : "opacity-40"}`} />
     </motion.a>
   );
 }
 
+// Helper to convert hex to rgba
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 // Helper type for link styles
 function getLinkStylesStatic(linkStyle: string, primaryColor: string, secondaryColor: string, textColor: string, cardOpacity: number) {
-  const baseStyles = "relative overflow-hidden transition-all duration-300 flex items-center gap-3";
+  const baseStyles = "relative overflow-hidden flex items-center gap-3";
   
   switch (linkStyle) {
     case "pills":
       return {
         className: `${baseStyles} px-6 py-3 rounded-full`,
         style: {
-          backgroundColor: `${primaryColor}20`,
-          border: `1px solid ${primaryColor}40`,
+          backgroundColor: hexToRgba(primaryColor, 0.12),
+          border: `1px solid ${hexToRgba(primaryColor, 0.25)}`,
           color: textColor,
         },
         hoverStyle: {
-          backgroundColor: `${primaryColor}40`,
-          transform: "translateY(-2px)",
-          boxShadow: `0 10px 30px ${primaryColor}30`,
+          scale: 1.02,
+          y: -2,
         },
       };
     
@@ -127,9 +140,8 @@ function getLinkStylesStatic(linkStyle: string, primaryColor: string, secondaryC
           backdropFilter: "blur(10px)",
         },
         hoverStyle: {
-          backgroundColor: `rgba(255,255,255,0.1)`,
-          borderColor: `${primaryColor}60`,
-          transform: "translateX(8px)",
+          x: 8,
+          scale: 1.01,
         },
       };
     
@@ -138,12 +150,11 @@ function getLinkStylesStatic(linkStyle: string, primaryColor: string, secondaryC
         className: `${baseStyles} px-4 py-3 rounded-lg`,
         style: {
           backgroundColor: "transparent",
-          borderBottom: `1px solid ${primaryColor}30`,
+          borderBottom: `1px solid ${hexToRgba(primaryColor, 0.2)}`,
           color: textColor,
         },
         hoverStyle: {
-          backgroundColor: `${primaryColor}10`,
-          borderColor: `${primaryColor}60`,
+          scale: 1.01,
         },
       };
     
@@ -159,10 +170,7 @@ function getLinkStylesStatic(linkStyle: string, primaryColor: string, secondaryC
           boxShadow: `0 4px 30px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.1)`,
         },
         hoverStyle: {
-          backgroundColor: `rgba(255,255,255,0.15)`,
-          borderColor: `${primaryColor}50`,
-          transform: "scale(1.02)",
-          boxShadow: `0 8px 40px ${primaryColor}20`,
+          scale: 1.02,
         },
       };
   }
