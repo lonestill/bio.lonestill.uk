@@ -1,0 +1,21 @@
+export const RESERVED_USERNAMES = [
+  "dashboard",
+  "login",
+  "register",
+  "signin",
+  "signup",
+  "api",
+  "admin",
+  "settings",
+  "bio",
+  "home",
+  "about",
+  "terms",
+  "privacy",
+  "404",
+  "500",
+  "robots.txt",
+  "sitemap.xml",
+  "favicon.ico",
+
+] as const;
