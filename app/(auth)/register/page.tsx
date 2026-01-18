@@ -5,9 +5,9 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [state, formAction] = useActionState(register, null);
   const searchParams = useSearchParams();
   const [username, setUsername] = useState("");
@@ -163,5 +163,13 @@ export default function RegisterPage() {
         </motion.div>
       </div>
     </main>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#050505]" />}>
+      <RegisterForm />
+    </Suspense>
   );
 }

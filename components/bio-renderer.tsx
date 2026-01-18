@@ -239,6 +239,8 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
   const linkStyle = display.linkStyle || "glass";
   const layout = display.layout || "centered";
   const showFavicons = display.showFavicons !== false; // По умолчанию включено
+  const avatarShape = display.avatarShape || "circle";
+  const typewriterEffect = modules.effects?.typewriter || false;
   
   // Theme
   const themeColors = profile.themeConfig?.colors || {};
@@ -448,7 +450,7 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
                     <div
                       className="relative w-28 h-28 md:w-36 md:h-36"
                       style={{
-                        borderRadius: profile.avatarShape === "square" ? "24px" : "50%",
+                        borderRadius: avatarShape === "square" ? "24px" : "50%",
                       }}
                     >
                       <img
@@ -456,7 +458,7 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
                         alt={profile.displayName || username}
                         className="w-full h-full object-cover"
                         style={{
-                          borderRadius: profile.avatarShape === "square" ? "24px" : "50%",
+                          borderRadius: avatarShape === "square" ? "24px" : "50%",
                           border: `3px solid ${primaryColor}60`,
                           boxShadow: `0 0 40px ${primaryColor}40`,
                         }}
@@ -539,8 +541,8 @@ export function BioRenderer({ profile, username, numericUid, createdAt }: BioRen
                     className="text-base md:text-lg leading-relaxed mb-8"
                     style={{ color: `${textColor}90` }}
                   >
-                    {profile.typewriterEffect ? bioText : profile.bioText}
-                    {profile.typewriterEffect && bioText.length < profile.bioText.length && (
+                    {typewriterEffect ? bioText : profile.bioText}
+                    {typewriterEffect && bioText.length < profile.bioText.length && (
                       <span className="animate-pulse ml-0.5" style={{ color: primaryColor }}>|</span>
                     )}
                   </motion.p>
