@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Profile } from "@/db/schema";
 import { updateProfile } from "@/app/actions/update-profile";
 import { useActionState } from "react";
@@ -18,7 +18,10 @@ import {
   Hash,
   Calendar,
   LayoutGrid,
+  Upload,
+  X,
 } from "lucide-react";
+import { useUploadThing } from "@/lib/uploadthing";
 
 interface ProfilePanelProps {
   profile: Profile;
@@ -50,6 +53,52 @@ export function ProfilePanel({ profile }: ProfilePanelProps) {
     showCreatedAt: display.showCreatedAt || false,
     layout: display.layout || "centered",
   });
+
+  // Upload states
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [backgroundUploading, setBackgroundUploading] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const backgroundInputRef = useRef<HTMLInputElement>(null);
+
+  const { startUpload: startAvatarUpload } = useUploadThing("avatarUploader", {
+    onClientUploadComplete: (res: { url: string }[]) => {
+      if (res && res[0]?.url) {
+        setFormData({ ...formData, avatarUrl: res[0].url });
+      }
+      setAvatarUploading(false);
+    },
+    onUploadError: (error: Error) => {
+      console.error("Avatar upload error:", error);
+      setAvatarUploading(false);
+    },
+  });
+
+  const { startUpload: startBackgroundUpload } = useUploadThing("backgroundUploader", {
+    onClientUploadComplete: (res: { url: string }[]) => {
+      if (res && res[0]?.url) {
+        setFormData({ ...formData, backgroundUrl: res[0].url });
+      }
+      setBackgroundUploading(false);
+    },
+    onUploadError: (error: Error) => {
+      console.error("Background upload error:", error);
+      setBackgroundUploading(false);
+    },
+  });
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setAvatarUploading(true);
+    await startAvatarUpload(Array.from(files));
+  };
+
+  const handleBackgroundChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setBackgroundUploading(true);
+    await startBackgroundUpload(Array.from(files));
+  };
 
   useEffect(() => {
     if (state?.success) {
@@ -133,47 +182,136 @@ export function ProfilePanel({ profile }: ProfilePanelProps) {
             </div>
           </div>
 
-          {/* Avatar URL */}
+          {/* Avatar Upload */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-mono text-neutral-400">
               <Image className="w-4 h-4 text-neutral-500" />
-              Аватар (URL)
+              Аватар
             </label>
-            <input
-              type="url"
-              value={formData.avatarUrl}
-              onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
-              placeholder="https://example.com/avatar.jpg"
-            />
-            {formData.avatarUrl && (
-              <div className="mt-3 flex items-center gap-4">
-                <img
-                  src={formData.avatarUrl}
-                  alt="Avatar preview"
-                  className="w-16 h-16 rounded-xl object-cover ring-2 ring-purple-500/20"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
+            <div className="flex items-start gap-4">
+              {formData.avatarUrl && (
+                <div className="relative group">
+                  <img
+                    src={formData.avatarUrl}
+                    alt="Avatar preview"
+                    className="w-20 h-20 rounded-xl object-cover ring-2 ring-purple-500/20"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, avatarUrl: "" })}
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500/80 hover:bg-red-500 border border-red-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-3 h-3 text-white" />
+                  </button>
+                </div>
+              )}
+              <div className="flex-1 space-y-3">
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="hidden"
                 />
-                <span className="text-xs font-mono text-neutral-500">Предпросмотр</span>
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={avatarUploading}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-800/50 border border-neutral-700 hover:bg-neutral-800 hover:border-neutral-600 transition-all font-mono text-sm text-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {avatarUploading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Загрузка...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4" />
+                      <span>Загрузить аватар</span>
+                    </>
+                  )}
+                </button>
+                <p className="text-xs font-mono text-neutral-500">
+                  Или введите URL вручную
+                </p>
+                <input
+                  type="url"
+                  value={formData.avatarUrl}
+                  onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
+                  placeholder="https://example.com/avatar.jpg"
+                />
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Background URL */}
+          {/* Background Upload */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-mono text-neutral-400">
               <Video className="w-4 h-4 text-neutral-500" />
-              Фон (URL изображения или видео)
+              Фон
             </label>
-            <input
-              type="url"
-              value={formData.backgroundUrl}
-              onChange={(e) => setFormData({ ...formData, backgroundUrl: e.target.value })}
-              className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
-              placeholder="https://example.com/background.mp4"
-            />
+            <div className="flex items-start gap-4">
+              {formData.backgroundUrl && (
+                <div className="relative group">
+                  <img
+                    src={formData.backgroundUrl}
+                    alt="Background preview"
+                    className="w-32 h-20 rounded-xl object-cover ring-2 ring-purple-500/20"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, backgroundUrl: "" })}
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500/80 hover:bg-red-500 border border-red-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-3 h-3 text-white" />
+                  </button>
+                </div>
+              )}
+              <div className="flex-1 space-y-3">
+                <input
+                  ref={backgroundInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBackgroundChange}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => backgroundInputRef.current?.click()}
+                  disabled={backgroundUploading}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-neutral-800/50 border border-neutral-700 hover:bg-neutral-800 hover:border-neutral-600 transition-all font-mono text-sm text-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {backgroundUploading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Загрузка...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4" />
+                      <span>Загрузить фон</span>
+                    </>
+                  )}
+                </button>
+                <p className="text-xs font-mono text-neutral-500">
+                  Или введите URL вручную (изображение или видео)
+                </p>
+                <input
+                  type="url"
+                  value={formData.backgroundUrl}
+                  onChange={(e) => setFormData({ ...formData, backgroundUrl: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
+                  placeholder="https://example.com/background.jpg"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

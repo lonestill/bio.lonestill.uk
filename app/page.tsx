@@ -1,7 +1,3 @@
-"use client";
-
-import Link from "next/link";
-import { motion } from "framer-motion";
 import { Header } from "@/components/header";
 import { HeroSection } from "@/components/hero-section";
 import { FeaturesGrid } from "@/components/features-grid";

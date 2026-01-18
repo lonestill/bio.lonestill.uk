@@ -13,6 +13,7 @@ import { EffectsPanel } from "@/components/dashboard/effects-panel";
 import { LinksPanel } from "@/components/dashboard/links-panel";
 import { AnalyticsPanel } from "@/components/dashboard/analytics-panel";
 import { BadgesPanel } from "@/components/dashboard/badges-panel";
+import { ConnectionsPanel } from "@/components/dashboard/connections-panel";
 
 interface PageProps {
   searchParams: Promise<{ tab?: string }>;
@@ -88,6 +89,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         return <EffectsPanel profile={profile} />;
       case "links":
         return <LinksPanel profile={profile} />;
+      case "connections":
+        return <ConnectionsPanel profile={profile} />;
       case "badges":
         return <BadgesPanel userBadges={userBadges} username={user.username} profile={profile} />;
       case "analytics":

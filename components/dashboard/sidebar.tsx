@@ -13,6 +13,7 @@ import {
   LogOut,
   ExternalLink,
   Award,
+  Plug,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -26,6 +27,7 @@ const navigation = [
   { id: "design", label: "Дизайн", icon: Palette },
   { id: "effects", label: "Эффекты", icon: Sparkles },
   { id: "links", label: "Ссылки", icon: Link2 },
+  { id: "connections", label: "Подключения", icon: Plug },
   { id: "badges", label: "Бейджи", icon: Award },
   { id: "analytics", label: "Аналитика", icon: BarChart3 },
 ];

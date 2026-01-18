@@ -13,7 +13,11 @@ import {
   Bug,
   Terminal,
   Star,
-  Crown
+  Crown,
+  Github,
+  Code,
+  GitBranch,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 
@@ -176,6 +180,190 @@ function getLinkStylesStatic(linkStyle: string, primaryColor: string, secondaryC
   }
 }
 
+// GitHub Widget Component
+function GitHubWidget({
+  username,
+  showLastCommit,
+  showPinnedRepos,
+  showStats,
+  maxRepos,
+  primaryColor,
+  textColor,
+  cardOpacity,
+  layout,
+}: {
+  username: string;
+  showLastCommit: boolean;
+  showPinnedRepos: boolean;
+  showStats: boolean;
+  maxRepos: number;
+  primaryColor: string;
+  textColor: string;
+  cardOpacity: number;
+  layout: string;
+}) {
+  const [githubData, setGithubData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/github?username=${encodeURIComponent(username)}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch GitHub data");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (data.error) {
+          console.error("GitHub API error:", data.error);
+          setIsLoading(false);
+          return;
+        }
+        // Debug: log data to see what we're getting
+        if (process.env.NODE_ENV === "development") {
+          console.log("GitHub data received:", data);
+          console.log("Last commit:", data.lastCommit);
+        }
+        setGithubData(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("GitHub fetch error:", err);
+        setIsLoading(false);
+      });
+  }, [username]);
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (!githubData || githubData.error) {
+    return null;
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.65 }}
+      className="mt-6 space-y-4"
+    >
+      {/* GitHub Header */}
+      <div className="flex items-center gap-3 mb-4">
+        <Github className="w-5 h-5" style={{ color: primaryColor }} />
+        <a
+          href={`https://github.com/${username}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono font-semibold text-lg hover:opacity-80 transition-opacity"
+          style={{ color: textColor }}
+        >
+          @{username}
+        </a>
+      </div>
+
+      {/* Stats */}
+      {showStats && (
+        <div className={`flex flex-wrap gap-4 text-sm font-mono ${layout === "centered" ? "justify-center" : ""}`} style={{ color: `${textColor}70` }}>
+          <div className="flex items-center gap-1.5">
+            <Code className="w-4 h-4" />
+            <span>{githubData.public_repos || 0} repos</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Users className="w-4 h-4" />
+            <span>{githubData.followers || 0} followers</span>
+          </div>
+        </div>
+      )}
+
+      {/* Last Commit */}
+      {showLastCommit && githubData.lastCommit ? (
+        <motion.a
+          href={githubData.lastCommit.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+          className="block p-4 rounded-xl border transition-all hover:scale-[1.02]"
+          style={{
+            backgroundColor: `rgba(255,255,255,${cardOpacity * 0.05})`,
+            borderColor: `${primaryColor}30`,
+          }}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <GitBranch className="w-4 h-4" style={{ color: primaryColor }} />
+            <span className="text-xs font-mono" style={{ color: `${textColor}60` }}>
+              Последний коммит
+            </span>
+          </div>
+          <div className="font-mono text-sm font-semibold mb-1" style={{ color: textColor }}>
+            {githubData.lastCommit.repo}
+          </div>
+          <div className="font-mono text-xs" style={{ color: `${textColor}70` }}>
+            {githubData.lastCommit.message}
+          </div>
+        </motion.a>
+      ) : showLastCommit && (
+        <div className="text-xs font-mono text-neutral-500 italic">
+          Нет доступных коммитов
+        </div>
+      )}
+
+      {/* Pinned Repos */}
+      {showPinnedRepos && githubData.pinnedRepos && githubData.pinnedRepos.length > 0 && (
+        <div className="space-y-2">
+          {githubData.pinnedRepos.slice(0, maxRepos).map((repo: any, index: number) => (
+            <motion.a
+              key={repo.name}
+              href={repo.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.7 + index * 0.1 }}
+              className="block p-3 rounded-lg border transition-all hover:scale-[1.02]"
+              style={{
+                backgroundColor: `rgba(255,255,255,${cardOpacity * 0.05})`,
+                borderColor: `${primaryColor}20`,
+              }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="font-mono text-sm font-semibold mb-1 truncate" style={{ color: textColor }}>
+                    {repo.name}
+                  </div>
+                  <div className="font-mono text-xs mb-2 line-clamp-2" style={{ color: `${textColor}70` }}>
+                    {repo.description}
+                  </div>
+                  <div className="flex items-center gap-3 text-xs font-mono" style={{ color: `${textColor}60` }}>
+                    {repo.language && (
+                      <span className="flex items-center gap-1">
+                        <div
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: primaryColor }}
+                        />
+                        {repo.language}
+                      </span>
+                    )}
+                    {repo.stars > 0 && (
+                      <span className="flex items-center gap-1">
+                        <Star className="w-3 h-3" />
+                        {repo.stars}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <ExternalLink className="w-4 h-4 flex-shrink-0" style={{ color: `${textColor}40` }} />
+              </div>
+            </motion.a>
+          ))}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
 export function BioRenderer({ profile, username, numericUid, createdAt, badges = [] }: BioRendererProps) {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [hasTrackedView, setHasTrackedView] = useState(false);
@@ -264,6 +452,15 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const typewriterEffect = modules.effects?.typewriter || false;
   const showBadges = display.showBadges !== false; // По умолчанию включено
   const visibleBadges: BadgeType[] = display.visibleBadges !== undefined ? display.visibleBadges : badges;
+  
+  // GitHub settings
+  const github = modules.github || {};
+  const githubEnabled = github.enabled !== false;
+  const githubUsername = github.username;
+  const showGitHubLastCommit = github.showLastCommit !== false;
+  const showGitHubPinnedRepos = github.showPinnedRepos !== false;
+  const showGitHubStats = github.showStats !== false;
+  const maxGitHubRepos = github.maxRepos || 3;
   
   // Theme
   const themeColors = profile.themeConfig?.colors || {};
@@ -617,6 +814,21 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
                       );
                     })}
                   </motion.div>
+                )}
+
+                {/* GitHub Widget */}
+                {githubEnabled && githubUsername && (
+                  <GitHubWidget
+                    username={githubUsername}
+                    showLastCommit={showGitHubLastCommit}
+                    showPinnedRepos={showGitHubPinnedRepos}
+                    showStats={showGitHubStats}
+                    maxRepos={maxGitHubRepos}
+                    primaryColor={primaryColor}
+                    textColor={textColor}
+                    cardOpacity={cardOpacity}
+                    layout={layout}
+                  />
                 )}
               </div>
 
