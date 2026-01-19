@@ -32,7 +32,7 @@ async function migrate() {
         const currentModules = row.modules;
         
         // Parse existing modules or create new object
-        let modules = {};
+        let modules: any = {};
         if (currentModules) {
           try {
             modules = typeof currentModules === 'string' 
@@ -44,7 +44,7 @@ async function migrate() {
         }
         
         // Parse badge config
-        let badgeConfigObj = {};
+        let badgeConfigObj: any = {};
         if (badgeConfig) {
           try {
             badgeConfigObj = typeof badgeConfig === 'string'

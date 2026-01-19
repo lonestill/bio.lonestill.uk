@@ -38,7 +38,7 @@ async function backup() {
     
     // Also create SQL for restoring
     console.log("\n2️⃣ Creating SQL restore script...");
-    const sqlStatements = result.rows.map((row) => {
+    const sqlStatements = result.rows.map((row: any) => {
       const userId = row.user_id;
       const config = row.premium_badge_config;
       
