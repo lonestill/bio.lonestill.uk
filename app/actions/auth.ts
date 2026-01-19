@@ -156,6 +156,8 @@ export async function login(
   prevState: { error: string | null } | null,
   formData: FormData
 ) {
+  let isBanned = false;
+  
   try {
     const rawData = {
       username: formData.get("username") as string,
@@ -182,17 +184,15 @@ export async function login(
     return { error: "Invalid username or password." };
   }
 
-  // Check if user is banned
-  if (user.role === "banned") {
-    return { error: "Ваш аккаунт заблокирован." };
-  }
-
   // Verify password
   const validPassword = await new Argon2id().verify(user.passwordHash, password);
 
   if (!validPassword) {
     return { error: "Invalid username or password." };
   }
+
+  // Check if banned
+  isBanned = user.role === "banned";
 
   // Create session
   const session = await lucia.createSession(user.id, {});
@@ -214,7 +214,8 @@ export async function login(
   }
   
   // Вынести redirect за пределы try-catch, чтобы NEXT_REDIRECT не перехватывался
-  redirect("/dashboard");
+  // Banned users go to /banned, others to /dashboard
+  redirect(isBanned ? "/banned" : "/dashboard");
 }
 
 export async function logout() {
