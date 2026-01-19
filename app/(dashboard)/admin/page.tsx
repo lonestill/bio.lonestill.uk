@@ -14,6 +14,7 @@ import {
   TokensPanel,
   SystemPanel,
   TicketsPanel,
+  GlobalAnalyticsPanel,
 } from "@/components/admin";
 
 interface PageProps {
@@ -69,6 +70,8 @@ export default async function AdminPage({ searchParams }: PageProps) {
         return <TicketsPanel />;
       case "analytics":
         return <AnalyticsAdminPanel />;
+      case "global-analytics":
+        return <GlobalAnalyticsPanel />;
       case "guestbook":
         return <GuestbookPanel />;
       case "tokens":

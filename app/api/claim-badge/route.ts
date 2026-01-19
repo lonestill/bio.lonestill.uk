@@ -26,7 +26,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { badge } = await request.json();
+    // Handle empty body
+    let body;
+    try {
+      const text = await request.text();
+      if (!text || text.trim() === '') {
+        return NextResponse.json({ error: "No badge specified" }, { status: 400 });
+      }
+      body = JSON.parse(text);
+    } catch (e) {
+      console.error('Failed to parse request body:', e);
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+    }
+
+    const { badge } = body;
 
     if (!badge || !CLAIMABLE_BADGES[badge]) {
       return NextResponse.json({ error: "Invalid badge" }, { status: 400 });

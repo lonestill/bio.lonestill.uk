@@ -76,27 +76,34 @@ export function AnalyticsTracker({ username, enabled = true }: AnalyticsTrackerP
     const handleBeforeUnload = () => {
       const timeOnPage = Math.floor((Date.now() - pageStartTime.current) / 1000);
       
-      // Use sendBeacon for reliable tracking when leaving
-      navigator.sendBeacon(
-        "/api/analytics/track",
-        JSON.stringify({
-          type: "pageview",
-          sessionId,
-          username,
-          path: pathname,
-          timeOnPage,
-        })
-      );
-
-      // Mark session as ended
-      navigator.sendBeacon(
-        "/api/analytics/track",
-        JSON.stringify({
-          type: "session",
-          sessionId,
-          username,
-        })
-      );
+      // Use sendBeacon with Blob for proper JSON content-type
+      const pageviewData = JSON.stringify({
+        type: "pageview",
+        sessionId,
+        username,
+        path: pathname,
+        timeOnPage,
+      });
+      
+      const sessionData = JSON.stringify({
+        type: "session",
+        sessionId,
+        username,
+      });
+      
+      try {
+        navigator.sendBeacon(
+          "/api/analytics/track",
+          new Blob([pageviewData], { type: "application/json" })
+        );
+        
+        navigator.sendBeacon(
+          "/api/analytics/track",
+          new Blob([sessionData], { type: "application/json" })
+        );
+      } catch (error) {
+        // Silent fail on beacon errors
+      }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);

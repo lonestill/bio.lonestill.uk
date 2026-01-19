@@ -19,7 +19,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    // Handle empty body or non-JSON content
+    let body;
+    try {
+      const text = await req.text();
+      if (!text || text.trim() === '') {
+        return NextResponse.json({ success: true }); // Silent ignore empty requests
+      }
+      body = JSON.parse(text);
+    } catch (e) {
+      console.error('Failed to parse request body:', e);
+      return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+    }
     const {
       type, // 'pageview' | 'event' | 'session' | 'custom'
       sessionId,

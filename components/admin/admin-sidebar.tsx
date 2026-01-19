@@ -29,6 +29,7 @@ const navigation = [
   { id: "users", label: "Пользователи", icon: Users },
   { id: "tickets", label: "Поддержка", icon: Headphones },
   { id: "analytics", label: "Аналитика", icon: BarChart3 },
+  { id: "global-analytics", label: "Глобальная аналитика", icon: Activity },
   { id: "guestbook", label: "Гостевая книга", icon: MessageSquare },
   { id: "tokens", label: "API токены", icon: Key },
   { id: "system", label: "Система", icon: Database },
