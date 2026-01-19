@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import {
   Search,
   Key,
@@ -19,36 +20,9 @@ import {
   Terminal,
   Shield,
   Activity,
-  Hash,
 } from "lucide-react";
 
-// API Documentation Data
-const API_SECTIONS = [
-  { category: "Основы", items: [
-    { id: "authentication", title: "Аутентификация", icon: Key },
-    { id: "rate-limiting", title: "Rate Limiting", icon: Activity },
-    { id: "caching", title: "Кэширование", icon: Zap },
-  ]},
-  { category: "API Reference", items: [
-    { id: "get-profile", title: "GET /profile/:username", icon: User },
-    { id: "get-users", title: "GET /users", icon: Users },
-  ]},
-  { category: "Справочник", items: [
-    { id: "errors", title: "Коды ошибок", icon: AlertTriangle },
-    { id: "examples", title: "Примеры кода", icon: Code },
-  ]},
-];
-
-const ERROR_CODES = [
-  { code: 200, status: "OK", description: "Успешный запрос", color: "text-green-400" },
-  { code: 400, status: "Bad Request", description: "Неверные параметры", color: "text-amber-400" },
-  { code: 401, status: "Unauthorized", description: "Неверный API токен", color: "text-red-400" },
-  { code: 404, status: "Not Found", description: "Ресурс не найден", color: "text-amber-400" },
-  { code: 429, status: "Too Many Requests", description: "Превышен лимит", color: "text-amber-400" },
-  { code: 500, status: "Internal Error", description: "Ошибка сервера", color: "text-red-400" },
-];
-
-function CodeBlock({ code, language = "bash" }: { code: string; language?: string }) {
+function CodeBlock({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
 
   const copyCode = async () => {
@@ -125,6 +99,32 @@ function EndpointCard({
 export default function ApiDocsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSection, setActiveSection] = useState("authentication");
+  const t = useTranslations("apiDocs");
+
+  const API_SECTIONS = [
+    { category: t("sidebar.basics"), items: [
+      { id: "authentication", title: t("sidebar.authentication"), icon: Key },
+      { id: "rate-limiting", title: t("sidebar.rateLimiting"), icon: Activity },
+      { id: "caching", title: t("sidebar.caching"), icon: Zap },
+    ]},
+    { category: "API Reference", items: [
+      { id: "get-profile", title: "GET /profile/:username", icon: User },
+      { id: "get-users", title: "GET /users", icon: Users },
+    ]},
+    { category: t("sidebar.reference"), items: [
+      { id: "errors", title: t("sidebar.errors"), icon: AlertTriangle },
+      { id: "examples", title: t("sidebar.examples"), icon: Code },
+    ]},
+  ];
+
+  const ERROR_CODES = [
+    { code: 200, status: "OK", description: t("errors.200"), color: "text-green-400" },
+    { code: 400, status: "Bad Request", description: t("errors.400"), color: "text-amber-400" },
+    { code: 401, status: "Unauthorized", description: t("errors.401"), color: "text-red-400" },
+    { code: 404, status: "Not Found", description: t("errors.404"), color: "text-amber-400" },
+    { code: 429, status: "Too Many Requests", description: t("errors.429"), color: "text-amber-400" },
+    { code: 500, status: "Internal Error", description: t("errors.500"), color: "text-red-400" },
+  ];
 
   const filteredSections = useMemo(() => {
     if (!searchQuery) return API_SECTIONS;
@@ -133,7 +133,7 @@ export default function ApiDocsPage() {
       ...category,
       items: category.items.filter(item => item.title.toLowerCase().includes(query))
     })).filter(category => category.items.length > 0);
-  }, [searchQuery]);
+  }, [searchQuery, API_SECTIONS]);
 
   const scrollToSection = (id: string) => {
     setActiveSection(id);
@@ -150,7 +150,7 @@ export default function ApiDocsPage() {
             <span className="text-purple-400">~</span>
             <span className="text-neutral-300 group-hover:text-white transition-colors">/lonestill</span>
           </Link>
-          <div className="text-xs font-mono text-neutral-600 mt-1">API Documentation v1</div>
+          <div className="text-xs font-mono text-neutral-600 mt-1">{t("sidebar.apiDocumentation")}</div>
         </div>
 
         {/* Search */}
@@ -161,7 +161,7 @@ export default function ApiDocsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Поиск..."
+              placeholder={t("sidebar.search")}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white font-mono text-sm placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 transition-colors"
             />
           </div>
@@ -205,7 +205,7 @@ export default function ApiDocsPage() {
           <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800">
             <div className="flex items-center gap-2 text-xs font-mono text-neutral-500 mb-2">
               <Terminal className="w-3.5 h-3.5" />
-              Base URL
+              {t("sidebar.baseUrl")}
             </div>
             <code className="text-xs font-mono text-purple-400">https://bio.lonestill.uk/api/v1</code>
           </div>
@@ -219,14 +219,14 @@ export default function ApiDocsPage() {
           <div className="px-12 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <BookOpen className="w-5 h-5 text-purple-400" />
-              <h1 className="font-mono font-bold text-white">API Documentation</h1>
+              <h1 className="font-mono font-bold text-white">{t("header.title")}</h1>
             </div>
             <Link
               href="/dashboard?tab=api"
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-mono text-sm transition-all"
             >
               <Key className="w-4 h-4" />
-              Get API Key
+              {t("header.getApiKey")}
             </Link>
           </div>
         </header>
@@ -238,7 +238,7 @@ export default function ApiDocsPage() {
             <div className="space-y-12">
               <div className="border-b border-neutral-800 pb-2">
                 <h2 className="text-sm font-mono font-semibold text-neutral-500 uppercase tracking-wider">
-                  Основы
+                  {t("sidebar.basics")}
                 </h2>
               </div>
 
@@ -246,17 +246,17 @@ export default function ApiDocsPage() {
             <section id="authentication" className="scroll-mt-20 space-y-6">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <Key className="w-6 h-6 text-purple-400" />
-                Аутентификация
+                {t("auth.title")}
               </h2>
               <p className="text-neutral-400 font-mono">
-                Все запросы требуют Bearer токен в заголовке <code className="text-purple-400">Authorization</code>:
+                {t("auth.description")} <code className="text-purple-400">Authorization</code>:
               </p>
               <CodeBlock code={`curl "https://bio.lonestill.uk/api/v1/profile/username" \\
   -H "Authorization: Bearer bio_xxxxxxxxxxxxx"`} />
               <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex gap-3">
                 <Shield className="w-5 h-5 text-amber-400 shrink-0" />
                 <p className="text-sm font-mono text-amber-400/90">
-                  Никогда не публикуйте API токен в публичных репозиториях.
+                  {t("auth.warning")}
                 </p>
               </div>
             </section>
@@ -268,13 +268,13 @@ export default function ApiDocsPage() {
                 Rate Limiting
               </h2>
               <p className="text-neutral-400 font-mono">
-                Лимит: <span className="text-purple-400">1,000 запросов/день</span> на токен.
+                {t("rateLimit.description")} <span className="text-purple-400">1,000 {t("rateLimit.limit")}</span>
               </p>
               <div className="grid grid-cols-3 gap-4">
                 {[
-                  { value: "1,000", label: "запросов/день", color: "purple" },
-                  { value: "5", label: "токенов/аккаунт", color: "green" },
-                  { value: "∞", label: "срок действия", color: "amber" },
+                  { value: "1,000", label: t("rateLimit.requestsPerDay"), color: "purple" },
+                  { value: "5", label: t("rateLimit.tokensPerAccount"), color: "green" },
+                  { value: "∞", label: t("rateLimit.expiration"), color: "amber" },
                 ].map((stat) => (
                   <div key={stat.label} className="p-4 rounded-xl bg-neutral-900 border border-neutral-800 text-center">
                     <div className={`text-2xl font-mono font-bold text-${stat.color}-400`}>{stat.value}</div>
@@ -291,16 +291,16 @@ X-RateLimit-Reset: 1704067200`} />
             <section id="caching" className="scroll-mt-20 space-y-6 pt-8 border-t border-neutral-800/50">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <Zap className="w-6 h-6 text-purple-400" />
-                Кэширование
+                {t("cache.title")}
               </h2>
-              <p className="text-neutral-400 font-mono">Ответы кэшируются на Vercel Edge:</p>
+              <p className="text-neutral-400 font-mono">{t("cache.description")}</p>
               <div className="overflow-hidden rounded-xl border border-neutral-800">
                 <table className="w-full">
                   <thead className="bg-neutral-900">
                     <tr>
-                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">Endpoint</th>
-                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">Cache</th>
-                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">SWR</th>
+                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">{t("cache.endpoint")}</th>
+                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">{t("cache.cacheTime")}</th>
+                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">{t("cache.swr")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-800">
@@ -332,22 +332,21 @@ X-RateLimit-Reset: 1704067200`} />
             <section id="get-profile" className="scroll-mt-20 space-y-6">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <User className="w-6 h-6 text-purple-400" />
-                Получить профиль
+                {t("getProfile.title")}
               </h2>
-              <EndpointCard method="GET" path="/api/v1/profile/:username" description="Возвращает данные профиля.">
+              <EndpointCard method="GET" path="/api/v1/profile/:username" description={t("getProfile.description")}>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-mono text-neutral-500 mb-2">Параметры</h4>
+                    <h4 className="text-sm font-mono text-neutral-500 mb-2">{t("getProfile.params")}</h4>
                     <div className="p-3 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center gap-3">
                       <code className="text-purple-400 font-mono text-sm">username</code>
                       <span className="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400">required</span>
-                      <span className="text-neutral-400 font-mono text-sm">— Имя пользователя</span>
+                      <span className="text-neutral-400 font-mono text-sm">— {t("getProfile.username")}</span>
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-sm font-mono text-neutral-500 mb-2">Ответ</h4>
+                    <h4 className="text-sm font-mono text-neutral-500 mb-2">{t("getProfile.response")}</h4>
                     <CodeBlock
-                      language="json"
                       code={`{
   "data": {
     "username": "gitty",
@@ -376,17 +375,17 @@ X-RateLimit-Reset: 1704067200`} />
             <section id="get-users" className="scroll-mt-20 space-y-6 pt-8 border-t border-neutral-800/50">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <Users className="w-6 h-6 text-purple-400" />
-                Список пользователей
+                {t("getUsers.title")}
               </h2>
-              <EndpointCard method="GET" path="/api/v1/users" description="Возвращает список пользователей с пагинацией.">
+              <EndpointCard method="GET" path="/api/v1/users" description={t("getUsers.description")}>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-mono text-neutral-500 mb-2">Query параметры</h4>
+                    <h4 className="text-sm font-mono text-neutral-500 mb-2">{t("getUsers.queryParams")}</h4>
                     <div className="space-y-2">
                       {[
-                        { name: "limit", default: "10", desc: "Количество (max: 100)" },
-                        { name: "offset", default: "0", desc: "Смещение" },
-                        { name: "sort", default: "views", desc: "views | created | uid" },
+                        { name: "limit", default: "10", desc: t("getUsers.limit") },
+                        { name: "offset", default: "0", desc: t("getUsers.offset") },
+                        { name: "sort", default: "views", desc: t("getUsers.sort") },
                       ].map((p) => (
                         <div key={p.name} className="p-3 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center gap-3">
                           <code className="text-purple-400 font-mono text-sm">{p.name}</code>
@@ -397,9 +396,8 @@ X-RateLimit-Reset: 1704067200`} />
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-sm font-mono text-neutral-500 mb-2">Ответ</h4>
+                    <h4 className="text-sm font-mono text-neutral-500 mb-2">{t("getUsers.response")}</h4>
                     <CodeBlock
-                      language="json"
                       code={`{
   "data": [
     {
@@ -429,7 +427,7 @@ X-RateLimit-Reset: 1704067200`} />
             <div className="space-y-12 border-t border-neutral-800 pt-12">
               <div className="border-b border-neutral-800 pb-2">
                 <h2 className="text-sm font-mono font-semibold text-neutral-500 uppercase tracking-wider">
-                  Справочник
+                  {t("sidebar.reference")}
                 </h2>
               </div>
 
@@ -437,15 +435,15 @@ X-RateLimit-Reset: 1704067200`} />
             <section id="errors" className="scroll-mt-20 space-y-6">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <AlertTriangle className="w-6 h-6 text-purple-400" />
-                Коды ошибок
+                {t("errors.title")}
               </h2>
               <div className="overflow-hidden rounded-xl border border-neutral-800">
                 <table className="w-full">
                   <thead className="bg-neutral-900">
                     <tr>
-                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">Код</th>
-                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">Статус</th>
-                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">Описание</th>
+                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">{t("errors.code")}</th>
+                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">{t("errors.status")}</th>
+                      <th className="text-left px-4 py-3 font-mono text-sm text-neutral-400">{t("errors.description")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-800">
@@ -465,7 +463,7 @@ X-RateLimit-Reset: 1704067200`} />
             <section id="examples" className="scroll-mt-20 space-y-6 pt-8 border-t border-neutral-800/50">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <Code className="w-6 h-6 text-purple-400" />
-                Примеры кода
+                {t("examples.title")}
               </h2>
 
               <div className="space-y-4">
@@ -527,15 +525,15 @@ curl "https://bio.lonestill.uk/api/v1/users?limit=10&sort=views" \\
             <section className="pt-8 border-t border-neutral-800">
               <div className="p-6 rounded-xl bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/20 flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-mono font-bold text-white">Готовы начать?</h3>
-                  <p className="text-neutral-400 font-mono text-sm mt-1">Создайте API токен прямо сейчас.</p>
+                  <h3 className="text-lg font-mono font-bold text-white">{t("cta.title")}</h3>
+                  <p className="text-neutral-400 font-mono text-sm mt-1">{t("cta.description")}</p>
                 </div>
                 <Link
                   href="/dashboard?tab=api"
                   className="flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-mono transition-all"
                 >
                   <Key className="w-4 h-4" />
-                  Создать токен
+                  {t("cta.button")}
                   <ExternalLink className="w-4 h-4" />
                 </Link>
               </div>

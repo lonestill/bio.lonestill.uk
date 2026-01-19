@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { Header } from "@/components/header";
 import { Ban, Mail } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-export default function BannedPage() {
+export default async function BannedPage() {
+  const t = await getTranslations("banned");
+
   return (
     <main className="min-h-screen bg-[#050505] text-white overflow-hidden">
       {/* Background Effects */}
@@ -43,32 +46,32 @@ export default function BannedPage() {
 
           {/* Message */}
           <h1 className="text-3xl md:text-4xl font-mono font-bold text-white mb-4 text-center">
-            Аккаунт заблокирован
+            {t("title")}
           </h1>
 
           <div className="glass rounded-2xl p-6 md:p-8 max-w-lg w-full mb-8 border-red-500/20">
             <div className="flex items-center gap-2 mb-4 pb-4 border-b border-red-500/10">
               <div className="w-3 h-3 rounded-full bg-red-500" />
-              <span className="text-sm font-mono text-red-400">access_denied</span>
+              <span className="text-sm font-mono text-red-400">{t("status")}</span>
             </div>
 
             <div className="font-mono text-sm space-y-4">
               <p className="text-neutral-300">
-                Ваш аккаунт был заблокирован администратором за нарушение правил платформы.
+                {t("message")}
               </p>
 
               <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/10">
-                <p className="text-neutral-500 text-xs mb-2">Возможные причины:</p>
+                <p className="text-neutral-500 text-xs mb-2">{t("reasons.title")}</p>
                 <ul className="text-neutral-400 text-xs space-y-1">
-                  <li>• Спам или нежелательный контент</li>
-                  <li>• Нарушение правил сообщества</li>
-                  <li>• Подозрительная активность</li>
-                  <li>• Многократные жалобы пользователей</li>
+                  <li>• {t("reasons.spam")}</li>
+                  <li>• {t("reasons.rules")}</li>
+                  <li>• {t("reasons.suspicious")}</li>
+                  <li>• {t("reasons.reports")}</li>
                 </ul>
               </div>
 
               <p className="text-neutral-500 text-xs">
-                Если вы считаете, что блокировка произошла по ошибке, свяжитесь с администрацией.
+                {t("appealInfo")}
               </p>
             </div>
           </div>
@@ -79,7 +82,7 @@ export default function BannedPage() {
               href="/"
               className="px-8 py-4 rounded-xl font-mono text-sm font-medium bg-neutral-900/50 border border-neutral-800 text-neutral-300 hover:text-white hover:border-neutral-700 hover:bg-neutral-800/50 transition-all duration-300"
             >
-              На главную
+              {t("goHome")}
             </Link>
 
             <Link
@@ -87,7 +90,7 @@ export default function BannedPage() {
               className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-medium bg-red-600/20 border border-red-500/20 text-red-400 hover:bg-red-600/30 hover:border-red-500/30 transition-all duration-300"
             >
               <Mail className="w-4 h-4" />
-              Связаться с поддержкой
+              {t("contactSupport")}
             </Link>
           </div>
 

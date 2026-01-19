@@ -3,21 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
-const TEXTS = [
-  "Создай свою био-страницу",
-  "Кастомизируй всё до пикселя",
-  "Добавь эффекты и музыку",
-];
+import { useTranslations } from "next-intl";
 
 export function HeroSection() {
+  const t = useTranslations("hero");
+  const texts = [t("texts.0"), t("texts.1"), t("texts.2")];
+  
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const currentText = TEXTS[currentTextIndex];
+    const currentText = texts[currentTextIndex];
     const timeout = setTimeout(() => {
       if (!isDeleting) {
         if (displayedText.length < currentText.length) {
@@ -30,13 +28,13 @@ export function HeroSection() {
           setDisplayedText(currentText.slice(0, displayedText.length - 1));
         } else {
           setIsDeleting(false);
-          setCurrentTextIndex((prev) => (prev + 1) % TEXTS.length);
+          setCurrentTextIndex((prev) => (prev + 1) % texts.length);
         }
       }
     }, isDeleting ? 40 : 80);
 
     return () => clearTimeout(timeout);
-  }, [displayedText, isDeleting, currentTextIndex]);
+  }, [displayedText, isDeleting, currentTextIndex, texts]);
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-20 overflow-hidden">
@@ -44,9 +42,6 @@ export function HeroSection() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/20 rounded-full blur-[150px] pointer-events-none" />
       
       <div className="relative z-10 max-w-5xl mx-auto w-full text-center space-y-10">
-        {/* Badge */}
-        
-
         {/* Main heading with typewriter */}
         <div className="h-20 md:h-28 flex items-center justify-center">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-mono font-bold bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
@@ -66,8 +61,7 @@ export function HeroSection() {
           transition={{ delay: 0.5 }}
           className="text-base md:text-lg text-neutral-400 font-mono max-w-xl mx-auto"
         >
-          Персональная страница с эффектами, музыкой и аналитикой. 
-          Собери все свои ссылки в одном месте.
+          {t("subtitle")}
         </motion.p>
 
         {/* Interactive URL input */}
@@ -83,7 +77,7 @@ export function HeroSection() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-              placeholder="твой_ник"
+              placeholder={t("placeholder")}
               className="bg-transparent border-none outline-none text-purple-400 flex-1 placeholder:text-neutral-600 min-w-0"
               maxLength={20}
               onKeyDown={(e) => {
@@ -97,7 +91,7 @@ export function HeroSection() {
             href={username.trim() ? `/register?username=${encodeURIComponent(username.trim())}` : '/register'}
             className="group font-mono text-base px-6 py-4 bg-purple-600 hover:bg-purple-500 rounded-xl transition-all hover:shadow-[0_0_30px_rgba(147,51,234,0.5)] whitespace-nowrap text-white font-medium"
           >
-            Создать страницу
+            {t("cta")}
             <motion.span
               className="inline-block ml-2"
               animate={{ x: [0, 4, 0] }}
@@ -117,15 +111,15 @@ export function HeroSection() {
         >
           <div className="flex items-center gap-2">
             <span className="text-purple-400">✦</span>
-            <span>8+ эффектов фона</span>
+            <span>{t("stats.backgrounds")}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-purple-400">✦</span>
-            <span>10+ эффектов ника</span>
+            <span>{t("stats.nickEffects")}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-purple-400">✦</span>
-            <span>4 стиля ссылок</span>
+            <span>{t("stats.linkStyles")}</span>
           </div>
         </motion.div>
       </div>

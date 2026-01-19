@@ -6,11 +6,14 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
+import { useTranslations } from "next-intl";
 
 function RegisterFormContent() {
   const [state, formAction] = useActionState(register, null);
   const searchParams = useSearchParams();
   const [username, setUsername] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const t = useTranslations("auth");
 
   useEffect(() => {
     const usernameParam = searchParams.get('username');
@@ -53,7 +56,7 @@ function RegisterFormContent() {
               transition={{ delay: 0.2 }}
               className="text-4xl font-mono font-bold mb-2 bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent"
             >
-              REGISTER
+              {t("registerTitle")}
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0 }}
@@ -61,7 +64,7 @@ function RegisterFormContent() {
               transition={{ delay: 0.3 }}
               className="text-sm font-mono text-neutral-400"
             >
-              Create your account
+              {t("createAccount")}
             </motion.p>
           </div>
 
@@ -73,7 +76,7 @@ function RegisterFormContent() {
               transition={{ delay: 0.4 }}
             >
               <label htmlFor="username" className="block mb-2 text-sm font-mono text-neutral-300 uppercase tracking-wider">
-                Username
+                {t("username")}
               </label>
               <input
                 type="text"
@@ -83,7 +86,7 @@ function RegisterFormContent() {
                 onChange={(e) => setUsername(e.target.value)}
                 required
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-white font-mono placeholder:text-neutral-600"
-                placeholder="your_username"
+                placeholder={t("usernamePlaceholder")}
               />
             </motion.div>
 
@@ -93,14 +96,14 @@ function RegisterFormContent() {
               transition={{ delay: 0.5 }}
             >
               <label htmlFor="email" className="block mb-2 text-sm font-mono text-neutral-300 uppercase tracking-wider">
-                Email <span className="text-neutral-500 text-xs normal-case">(Optional)</span>
+                {t("email")} <span className="text-neutral-500 text-xs normal-case">{t("emailOptional")}</span>
               </label>
               <input
                 type="email"
                 id="email"
                 name="email"
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-white font-mono placeholder:text-neutral-600"
-                placeholder="your@email.com"
+                placeholder={t("emailPlaceholder")}
               />
             </motion.div>
 
@@ -110,7 +113,7 @@ function RegisterFormContent() {
               transition={{ delay: 0.6 }}
             >
               <label htmlFor="password" className="block mb-2 text-sm font-mono text-neutral-300 uppercase tracking-wider">
-                Password
+                {t("password")}
               </label>
               <input
                 type="password"
@@ -118,8 +121,35 @@ function RegisterFormContent() {
                 name="password"
                 required
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-white font-mono placeholder:text-neutral-600"
-                placeholder="••••••••"
+                placeholder={t("passwordPlaceholder")}
               />
+            </motion.div>
+
+            {/* Terms checkbox */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.65 }}
+              className="flex items-start gap-3"
+            >
+              <input
+                type="checkbox"
+                id="terms"
+                name="terms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-1 w-4 h-4 rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500/50 focus:ring-offset-0 cursor-pointer"
+              />
+              <label htmlFor="terms" className="text-sm font-mono text-neutral-400 cursor-pointer">
+                {t("acceptTerms")}{" "}
+                <Link 
+                  href="/terms" 
+                  target="_blank"
+                  className="text-purple-400 hover:text-purple-300 underline decoration-purple-500/50"
+                >
+                  {t("termsLink")}
+                </Link>
+              </label>
             </motion.div>
 
             {state?.error && (
@@ -134,14 +164,19 @@ function RegisterFormContent() {
 
             <motion.button
               type="submit"
+              disabled={!acceptedTerms}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full px-6 py-3 bg-purple-600/20 border border-purple-500/30 rounded-lg hover:bg-purple-600/30 hover:border-purple-500/50 transition-all font-mono text-white hover:shadow-[0_0_20px_rgba(147,51,234,0.5)]"
+              whileHover={acceptedTerms ? { scale: 1.02 } : {}}
+              whileTap={acceptedTerms ? { scale: 0.98 } : {}}
+              className={`w-full px-6 py-3 border rounded-lg transition-all font-mono ${
+                acceptedTerms
+                  ? "bg-purple-600/20 border-purple-500/30 hover:bg-purple-600/30 hover:border-purple-500/50 text-white hover:shadow-[0_0_20px_rgba(147,51,234,0.5)] cursor-pointer"
+                  : "bg-neutral-800/50 border-neutral-700/50 text-neutral-500 cursor-not-allowed"
+              }`}
             >
-              REGISTER
+              {t("registerTitle")}
             </motion.button>
           </form>
 
@@ -152,12 +187,12 @@ function RegisterFormContent() {
             transition={{ delay: 0.8 }}
             className="mt-6 text-center text-sm font-mono text-neutral-400"
           >
-            Already have an account?{" "}
+            {t("haveAccount")}{" "}
             <Link 
               href="/login" 
               className="text-purple-400 hover:text-purple-300 transition-colors underline decoration-purple-500/50 hover:decoration-purple-400"
             >
-              Login
+              {t("loginTitle")}
             </Link>
           </motion.p>
         </motion.div>

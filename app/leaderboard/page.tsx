@@ -1,9 +1,10 @@
 import { db } from "@/db";
 import { profiles, users, linkClicks, profileViews } from "@/db/schema";
-import { desc, sql, gte, eq } from "drizzle-orm";
+import { desc, sql, eq } from "drizzle-orm";
 import Link from "next/link";
 import { Header } from "@/components/header";
 import { Trophy, Eye, MousePointerClick, Sparkles, TrendingUp } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 type LeaderboardEntry = {
   username: string;
@@ -98,6 +99,7 @@ export default async function LeaderboardPage({
   const params = await searchParams;
   const sortBy = (params.sort as "views" | "clicks" | "new") || "views";
   const leaderboard = await getLeaderboard(sortBy);
+  const t = await getTranslations("leaderboard");
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
@@ -127,11 +129,11 @@ export default async function LeaderboardPage({
                   <Trophy className="w-8 h-8 text-yellow-400" />
                 </div>
                 <h1 className="text-5xl md:text-6xl font-mono font-bold bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
-                  Лидерборд
+                  {t("title")}
                 </h1>
               </div>
               <p className="text-lg font-mono text-neutral-400">
-                Топ профилей по активности
+                {t("subtitle")}
               </p>
             </div>
 
@@ -146,7 +148,7 @@ export default async function LeaderboardPage({
                 }`}
               >
                 <Eye className="w-4 h-4 inline mr-2" />
-                По просмотрам
+                {t("sortByViews")}
               </Link>
               <Link
                 href="/leaderboard?sort=clicks"
@@ -157,7 +159,7 @@ export default async function LeaderboardPage({
                 }`}
               >
                 <MousePointerClick className="w-4 h-4 inline mr-2" />
-                По кликам
+                {t("sortByClicks")}
               </Link>
               <Link
                 href="/leaderboard?sort=new"
@@ -168,7 +170,7 @@ export default async function LeaderboardPage({
                 }`}
               >
                 <TrendingUp className="w-4 h-4 inline mr-2" />
-                Новички недели
+                {t("sortByNew")}
               </Link>
             </div>
 
@@ -176,7 +178,7 @@ export default async function LeaderboardPage({
             <div className="space-y-3">
               {leaderboard.length === 0 ? (
                 <div className="text-center py-16">
-                  <p className="text-neutral-500 font-mono">Пока нет профилей в рейтинге</p>
+                  <p className="text-neutral-500 font-mono">{t("noProfiles")}</p>
                 </div>
               ) : (
                 leaderboard.map((entry, index) => {

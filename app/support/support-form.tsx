@@ -3,21 +3,23 @@
 import { useActionState } from "react";
 import { createTicket } from "@/app/actions/support";
 import { Loader2, Send, CheckCircle2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface SupportFormProps {
   userEmail?: string;
 }
 
-const CATEGORIES = [
-  { value: "ban_appeal", label: "Апелляция бана" },
-  { value: "bug_report", label: "Баг-репорт" },
-  { value: "feature_request", label: "Предложение функции" },
-  { value: "account_issue", label: "Проблема с аккаунтом" },
-  { value: "other", label: "Другое" },
-];
-
 export function SupportForm({ userEmail = "" }: SupportFormProps) {
   const [state, formAction, isPending] = useActionState(createTicket, null);
+  const t = useTranslations("support");
+
+  const CATEGORIES = [
+    { value: "ban_appeal", label: t("categories.banAppeal") },
+    { value: "bug_report", label: t("categories.bugReport") },
+    { value: "feature_request", label: t("categories.featureRequest") },
+    { value: "account_issue", label: t("categories.accountIssue") },
+    { value: "other", label: t("categories.other") },
+  ];
 
   if (state?.success) {
     return (
@@ -26,16 +28,16 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
           <CheckCircle2 className="w-8 h-8 text-green-400" />
         </div>
         <h3 className="text-lg font-mono font-semibold text-white mb-2">
-          Обращение отправлено!
+          {t("ticketSent")}
         </h3>
         <p className="text-sm text-neutral-400 font-mono mb-6">
-          Мы ответим на указанный email в ближайшее время
+          {t("willReply")}
         </p>
         <button
           onClick={() => window.location.reload()}
           className="px-6 py-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/20 text-purple-400 font-mono text-sm transition-all"
         >
-          Отправить ещё
+          {t("sendAnother")}
         </button>
       </div>
     );
@@ -46,7 +48,7 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
       {/* Email */}
       <div>
         <label className="block text-sm font-mono text-neutral-400 mb-2">
-          Email для ответа *
+          {t("emailForReply")} *
         </label>
         <input
           type="email"
@@ -61,7 +63,7 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
       {/* Category */}
       <div>
         <label className="block text-sm font-mono text-neutral-400 mb-2">
-          Категория *
+          {t("category")} *
         </label>
         <select
           name="category"
@@ -70,7 +72,7 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
           className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-neutral-200 font-mono text-sm focus:outline-none focus:border-purple-500/30 transition-colors"
         >
           <option value="" disabled>
-            Выберите категорию
+            {t("selectCategory")}
           </option>
           {CATEGORIES.map((cat) => (
             <option key={cat.value} value={cat.value}>
@@ -83,7 +85,7 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
       {/* Subject */}
       <div>
         <label className="block text-sm font-mono text-neutral-400 mb-2">
-          Тема *
+          {t("subject")} *
         </label>
         <input
           type="text"
@@ -91,7 +93,7 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
           required
           minLength={5}
           maxLength={200}
-          placeholder="Кратко опишите проблему"
+          placeholder={t("subjectPlaceholder")}
           className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-neutral-200 font-mono text-sm placeholder-neutral-600 focus:outline-none focus:border-purple-500/30 transition-colors"
         />
       </div>
@@ -99,7 +101,7 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
       {/* Message */}
       <div>
         <label className="block text-sm font-mono text-neutral-400 mb-2">
-          Сообщение *
+          {t("message")} *
         </label>
         <textarea
           name="message"
@@ -107,7 +109,7 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
           minLength={20}
           maxLength={5000}
           rows={6}
-          placeholder="Подробно опишите вашу проблему или предложение..."
+          placeholder={t("messagePlaceholder")}
           className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-neutral-200 font-mono text-sm placeholder-neutral-600 focus:outline-none focus:border-purple-500/30 transition-colors resize-none"
         />
       </div>
@@ -130,13 +132,13 @@ export function SupportForm({ userEmail = "" }: SupportFormProps) {
         ) : (
           <>
             <Send className="w-4 h-4" />
-            Отправить
+            {t("send")}
           </>
         )}
       </button>
 
       <p className="text-[10px] text-neutral-600 font-mono text-center">
-        Отправляя форму, вы соглашаетесь на обработку данных
+        {t("formConsent")}
       </p>
     </form>
   );

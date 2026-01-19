@@ -4,6 +4,7 @@ import { getUserTickets } from "@/app/actions/support";
 import { lucia } from "@/lib/auth";
 import { SESSION_COOKIE_NAME } from "@/lib/auth-config";
 import { cookies } from "next/headers";
+import { getTranslations, getLocale } from "next-intl/server";
 import { 
   MessageSquare, 
   Clock, 
@@ -13,22 +14,10 @@ import {
   XCircle,
 } from "lucide-react";
 
-const STATUS_CONFIG = {
-  open: { label: "Открыт", icon: AlertCircle, color: "text-yellow-400", bg: "bg-yellow-500/10" },
-  in_progress: { label: "В работе", icon: Loader2, color: "text-blue-400", bg: "bg-blue-500/10" },
-  resolved: { label: "Решён", icon: CheckCircle2, color: "text-green-400", bg: "bg-green-500/10" },
-  closed: { label: "Закрыт", icon: XCircle, color: "text-neutral-400", bg: "bg-neutral-500/10" },
-};
-
-const CATEGORY_LABELS = {
-  ban_appeal: "Апелляция бана",
-  bug_report: "Баг-репорт",
-  feature_request: "Предложение",
-  account_issue: "Проблема с аккаунтом",
-  other: "Другое",
-};
-
 export default async function SupportPage() {
+  const t = await getTranslations("support");
+  const locale = await getLocale();
+  
   // Check if user is logged in
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
@@ -47,6 +36,21 @@ export default async function SupportPage() {
 
   // Get user's tickets if logged in
   const tickets = isLoggedIn ? await getUserTickets() : [];
+
+  const STATUS_CONFIG = {
+    open: { label: t("status.open"), icon: AlertCircle, color: "text-yellow-400", bg: "bg-yellow-500/10" },
+    in_progress: { label: t("status.inProgress"), icon: Loader2, color: "text-blue-400", bg: "bg-blue-500/10" },
+    resolved: { label: t("status.resolved"), icon: CheckCircle2, color: "text-green-400", bg: "bg-green-500/10" },
+    closed: { label: t("status.closed"), icon: XCircle, color: "text-neutral-400", bg: "bg-neutral-500/10" },
+  };
+
+  const CATEGORY_LABELS = {
+    ban_appeal: t("categories.banAppeal"),
+    bug_report: t("categories.bugReport"),
+    feature_request: t("categories.featureRequest"),
+    account_issue: t("categories.accountIssue"),
+    other: t("categories.other"),
+  };
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
@@ -76,10 +80,10 @@ export default async function SupportPage() {
               <MessageSquare className="w-8 h-8 text-purple-400" />
             </div>
             <h1 className="text-3xl md:text-4xl font-mono font-bold text-white mb-4">
-              Поддержка
+              {t("title")}
             </h1>
             <p className="text-neutral-400 font-mono max-w-lg mx-auto">
-              Столкнулись с проблемой или есть предложение? Мы поможем!
+              {t("subtitle")}
             </p>
           </div>
 
@@ -87,7 +91,7 @@ export default async function SupportPage() {
             {/* Form */}
             <div className="glass rounded-2xl p-6 md:p-8">
               <h2 className="text-lg font-mono font-semibold text-white mb-6">
-                Создать обращение
+                {t("createTicket")}
               </h2>
               <SupportForm userEmail={userEmail} />
             </div>
@@ -95,23 +99,23 @@ export default async function SupportPage() {
             {/* User's Tickets */}
             <div className="space-y-6">
               <h2 className="text-lg font-mono font-semibold text-white">
-                {isLoggedIn ? "Ваши обращения" : "Информация"}
+                {isLoggedIn ? t("yourTickets") : "Info"}
               </h2>
 
               {!isLoggedIn ? (
                 <div className="glass rounded-2xl p-6">
                   <p className="text-neutral-400 text-sm font-mono mb-4">
-                    Войдите в аккаунт, чтобы видеть историю своих обращений и получать ответы.
+                    {t("info")}
                   </p>
                   <p className="text-neutral-500 text-xs font-mono">
-                    Вы всё равно можете отправить обращение без входа — ответ придёт на указанный email.
+                    {t("infoAnonymous")}
                   </p>
                 </div>
               ) : tickets.length === 0 ? (
                 <div className="glass rounded-2xl p-6 text-center">
                   <MessageSquare className="w-12 h-12 text-neutral-600 mx-auto mb-4" />
                   <p className="text-neutral-500 text-sm font-mono">
-                    У вас пока нет обращений
+                    {t("noTickets")}
                   </p>
                 </div>
               ) : (
@@ -152,7 +156,7 @@ export default async function SupportPage() {
                         {/* Admin response */}
                         {ticket.adminResponse && (
                           <div className="p-3 rounded-lg bg-purple-500/5 border border-purple-500/10 mb-3">
-                            <p className="text-xs font-mono text-neutral-500 mb-1">Ответ поддержки:</p>
+                            <p className="text-xs font-mono text-neutral-500 mb-1">{t("supportResponse")}:</p>
                             <p className="text-sm text-neutral-300 font-mono">
                               {ticket.adminResponse}
                             </p>
@@ -163,7 +167,7 @@ export default async function SupportPage() {
                         <div className="flex items-center gap-2 text-[10px] font-mono text-neutral-600">
                           <Clock className="w-3 h-3" />
                           {ticket.createdAt
-                            ? new Date(ticket.createdAt).toLocaleString("ru")
+                            ? new Date(ticket.createdAt).toLocaleString(locale)
                             : "—"}
                         </div>
                       </div>
@@ -175,20 +179,20 @@ export default async function SupportPage() {
               {/* FAQ */}
               <div className="glass rounded-2xl p-6">
                 <h3 className="text-sm font-mono font-semibold text-white mb-4">
-                  Частые вопросы
+                  {t("faq.title")}
                 </h3>
                 <div className="space-y-3 text-xs font-mono">
                   <div>
-                    <p className="text-purple-400 mb-1">Как долго ждать ответа?</p>
-                    <p className="text-neutral-500">Обычно отвечаем в течение 24-48 часов</p>
+                    <p className="text-purple-400 mb-1">{t("faq.responseTime")}</p>
+                    <p className="text-neutral-500">{t("faq.responseTimeAnswer")}</p>
                   </div>
                   <div>
-                    <p className="text-purple-400 mb-1">Меня забанили, что делать?</p>
-                    <p className="text-neutral-500">Выберите категорию "Апелляция бана" и опишите ситуацию</p>
+                    <p className="text-purple-400 mb-1">{t("faq.banned")}</p>
+                    <p className="text-neutral-500">{t("faq.bannedAnswer")}</p>
                   </div>
                   <div>
-                    <p className="text-purple-400 mb-1">Нашёл баг, куда писать?</p>
-                    <p className="text-neutral-500">Выберите "Баг-репорт" и подробно опишите проблему</p>
+                    <p className="text-purple-400 mb-1">{t("faq.foundBug")}</p>
+                    <p className="text-neutral-500">{t("faq.foundBugAnswer")}</p>
                   </div>
                 </div>
               </div>

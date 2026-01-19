@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { 
   Sparkles, 
   Eye, 
@@ -9,6 +10,8 @@ import {
 } from "lucide-react";
 
 export function LiveDemo() {
+  const t = useTranslations("liveDemo");
+
   return (
     <section id="showcase" className="py-24 px-6 border-t border-neutral-800/30">
       <div className="max-w-6xl mx-auto">
@@ -74,7 +77,7 @@ export function LiveDemo() {
 
                     {/* Bio */}
                     <p className="text-center text-neutral-400 text-sm font-mono">
-                      Делаю крутые штуки ✨
+                      {t("demoBio")}
                     </p>
 
                     {/* Links */}
@@ -136,27 +139,26 @@ export function LiveDemo() {
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono">
               <Sparkles className="w-3 h-3" />
-              Полная кастомизация
+              {t("badge")}
             </div>
 
             <h2 className="text-3xl md:text-4xl font-mono font-bold text-white leading-tight">
-              Настрой каждую
+              {t("title")}
               <br />
-              <span className="text-purple-400">деталь</span> своей страницы
+              <span className="text-purple-400">{t("titleHighlight")}</span> {t("titleEnd")}
             </h2>
             
             <p className="text-neutral-400 text-base leading-relaxed">
-              Визуальный редактор позволяет настроить цвета, эффекты, музыку и стиль ссылок 
-              без единой строчки кода. Просто выбирай и сохраняй.
+              {t("description")}
             </p>
             
             {/* Feature list */}
             <div className="space-y-4 pt-4">
               {[
-                { icon: "🎨", text: "Кастомные цвета темы" },
-                { icon: "✨", text: "Анимированные эффекты фона" },
-                { icon: "🎵", text: "Фоновая музыка с YouTube" },
-                { icon: "📊", text: "Статистика в реальном времени" },
+                { icon: "🎨", text: t("features.colors") },
+                { icon: "✨", text: t("features.effects") },
+                { icon: "🎵", text: t("features.music") },
+                { icon: "📊", text: t("features.stats") },
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -179,7 +181,7 @@ export function LiveDemo() {
               transition={{ delay: 0.5 }}
               className="inline-flex items-center gap-2 font-mono text-sm px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl transition-all hover:shadow-[0_0_30px_rgba(147,51,234,0.5)] text-white font-medium mt-4"
             >
-              Попробовать бесплатно
+              {t("cta")}
               <MousePointerClick className="w-4 h-4" />
             </motion.a>
           </motion.div>

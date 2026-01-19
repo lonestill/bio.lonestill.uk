@@ -3,6 +3,8 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SecretConsole } from "@/components/secret-console";
 import "@uploadthing/react/styles.css";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrainsMono = JetBrains_Mono({ 
@@ -19,16 +21,21 @@ export const metadata: Metadata = {
   description: "Create your beautiful bio page",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans`}>
-        <SecretConsole />
-        {children}
+        <NextIntlClientProvider messages={messages}>
+          <SecretConsole />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

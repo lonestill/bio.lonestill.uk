@@ -4,9 +4,11 @@ import { login } from "@/app/actions/auth";
 import { useActionState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export function LoginForm() {
   const [state, formAction] = useActionState(login, null);
+  const t = useTranslations("auth");
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center p-6 overflow-hidden bg-[#050505]">
@@ -42,7 +44,7 @@ export function LoginForm() {
               transition={{ delay: 0.2 }}
               className="text-4xl font-mono font-bold mb-2 bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent"
             >
-              LOGIN
+              {t("loginTitle")}
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0 }}
@@ -50,7 +52,7 @@ export function LoginForm() {
               transition={{ delay: 0.3 }}
               className="text-sm font-mono text-neutral-400"
             >
-              Enter your credentials
+              {t("enterCredentials")}
             </motion.p>
           </div>
 
@@ -62,7 +64,7 @@ export function LoginForm() {
               transition={{ delay: 0.4 }}
             >
               <label htmlFor="username" className="block mb-2 text-sm font-mono text-neutral-300 uppercase tracking-wider">
-                Username
+                {t("username")}
               </label>
               <input
                 type="text"
@@ -70,7 +72,7 @@ export function LoginForm() {
                 name="username"
                 required
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-white font-mono placeholder:text-neutral-600"
-                placeholder="your_username"
+                placeholder={t("usernamePlaceholder")}
               />
             </motion.div>
 
@@ -80,7 +82,7 @@ export function LoginForm() {
               transition={{ delay: 0.5 }}
             >
               <label htmlFor="password" className="block mb-2 text-sm font-mono text-neutral-300 uppercase tracking-wider">
-                Password
+                {t("password")}
               </label>
               <input
                 type="password"
@@ -88,7 +90,7 @@ export function LoginForm() {
                 name="password"
                 required
                 className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-white font-mono placeholder:text-neutral-600"
-                placeholder="••••••••"
+                placeholder={t("passwordPlaceholder")}
               />
             </motion.div>
 
@@ -111,7 +113,7 @@ export function LoginForm() {
               whileTap={{ scale: 0.98 }}
               className="w-full px-6 py-3 bg-purple-600/20 border border-purple-500/30 rounded-lg hover:bg-purple-600/30 hover:border-purple-500/50 transition-all font-mono text-white hover:shadow-[0_0_20px_rgba(147,51,234,0.5)]"
             >
-              LOGIN
+              {t("loginTitle")}
             </motion.button>
           </form>
 
@@ -122,12 +124,12 @@ export function LoginForm() {
             transition={{ delay: 0.7 }}
             className="mt-6 text-center text-sm font-mono text-neutral-400"
           >
-            Don't have an account?{" "}
+            {t("noAccount")}{" "}
             <Link 
               href="/register" 
               className="text-purple-400 hover:text-purple-300 transition-colors underline decoration-purple-500/50 hover:decoration-purple-400"
             >
-              Register
+              {t("registerTitle")}
             </Link>
           </motion.p>
         </motion.div>

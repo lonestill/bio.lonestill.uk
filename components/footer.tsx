@@ -2,16 +2,19 @@
 
 import Link from "next/link";
 import { Github, Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function Footer() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="border-t border-neutral-800/30 py-8 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="font-mono text-sm text-neutral-500 flex items-center gap-1">
-            <span>Сделано с</span>
+            <span>{t("madeWith")}</span>
             <Heart className="w-4 h-4 text-pink-500 fill-pink-500" />
-            <span>by</span>
+            <span>{t("by")}</span>
             <Link 
               href="https://github.com/lonestill" 
               target="_blank"

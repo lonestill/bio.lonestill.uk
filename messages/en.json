@@ -1,0 +1,461 @@
+{
+  "common": {
+    "home": "Home",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "support": "Support",
+    "terms": "Terms of Service",
+    "leaderboard": "Leaderboard",
+    "apiDocs": "API Docs",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "noResults": "No results found",
+    "createdBy": "Created on bio.lonestill.uk"
+  },
+  "header": {
+    "features": "Features",
+    "demo": "Demo",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "texts": {
+      "0": "Create your bio page",
+      "1": "Customize every pixel",
+      "2": "Add effects and music"
+    },
+    "subtitle": "Personal page with effects, music and analytics. Gather all your links in one place.",
+    "placeholder": "your_username",
+    "cta": "Create Page",
+    "stats": {
+      "backgrounds": "8+ background effects",
+      "nickEffects": "10+ nickname effects",
+      "linkStyles": "4 link styles"
+    }
+  },
+  "features": {
+    "title": "Everything you need for a",
+    "titleHighlight": "perfect",
+    "titleEnd": "page",
+    "subtitle": "Complete toolkit for creating a unique bio page",
+    "items": {
+      "backgrounds": {
+        "title": "Background Effects",
+        "description": "Snow, rain, northern lights, stars, plasma and retro TV effect. Bring your page to life."
+      },
+      "nickname": {
+        "title": "Nickname Effects",
+        "description": "Rainbow gradient, neon glow, particles of different colors and smooth transitions."
+      },
+      "music": {
+        "title": "Background Music",
+        "description": "Add MP3 or YouTube track. Music will automatically play when entering the page."
+      },
+      "linkStyles": {
+        "title": "Link Styles",
+        "description": "4 design options: glass, cards, pills or minimal. Choose your style."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Track views, unique visitors and link clicks in real time."
+      },
+      "clickToEnter": {
+        "title": "Click to Enter",
+        "description": "Mysterious welcome screen before showing content. Customizable text."
+      },
+      "stats": {
+        "title": "Stats Display",
+        "description": "Show views, UID and registration date right on the page. Or hide them — it's up to you."
+      },
+      "snow": {
+        "title": "Falling Snow",
+        "description": "Separate snowflake effect on top of content. Creates a cozy atmosphere."
+      }
+    }
+  },
+  "liveDemo": {
+    "badge": "Full Customization",
+    "title": "Customize every",
+    "titleHighlight": "detail",
+    "titleEnd": "of your page",
+    "description": "Visual editor allows you to customize colors, effects, music and link style without a single line of code. Just pick and save.",
+    "features": {
+      "colors": "Custom theme colors",
+      "effects": "Animated background effects",
+      "music": "Background music from YouTube",
+      "stats": "Real-time statistics"
+    },
+    "cta": "Try for free",
+    "demoBio": "Making cool stuff ✨"
+  },
+  "auth": {
+    "loginTitle": "LOGIN",
+    "registerTitle": "REGISTER",
+    "username": "Username",
+    "usernamePlaceholder": "your_username",
+    "email": "Email",
+    "emailOptional": "(Optional)",
+    "emailPlaceholder": "your@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "enterCredentials": "Enter your credentials",
+    "createAccount": "Create your account",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "acceptTerms": "I have read and accept the",
+    "termsLink": "terms of service",
+    "invalidCredentials": "Invalid username or password.",
+    "accountBanned": "Your account has been banned.",
+    "usernameTaken": "Username already taken.",
+    "emailTaken": "Email already registered.",
+    "mustAcceptTerms": "You must accept the terms of service"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "subtitle": "Manage your page and track statistics",
+    "controlPanel": "Control Panel",
+    "tabs": {
+      "profile": "Profile",
+      "design": "Design",
+      "effects": "Effects",
+      "links": "Links",
+      "connections": "Connections",
+      "badges": "Badges",
+      "api": "API",
+      "analytics": "Analytics"
+    },
+    "stats": {
+      "totalViews": "Total Views",
+      "uniqueVisitors": "Unique Visitors",
+      "linkClicks": "Link Clicks",
+      "ctr": "CTR"
+    },
+    "openPage": "Open Page",
+    "devBlog": "Developer Blog"
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Basic information about you",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Your name",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell about yourself...",
+    "avatar": "Avatar",
+    "uploadAvatar": "Upload image",
+    "removeAvatar": "Remove"
+  },
+  "design": {
+    "title": "Design",
+    "subtitle": "Customize the look of your page",
+    "colors": "Colors",
+    "primaryColor": "Primary Color",
+    "textColor": "Text Color",
+    "background": "Background",
+    "uploadBackground": "Upload background",
+    "removeBackground": "Remove",
+    "backgroundSettings": "Background Settings",
+    "opacity": "Opacity",
+    "blur": "Blur"
+  },
+  "effects": {
+    "title": "Effects",
+    "subtitle": "Add visual effects to your page",
+    "music": "Music",
+    "musicUrl": "Music URL",
+    "musicUrlPlaceholder": "YouTube or direct MP3 link",
+    "volume": "Volume",
+    "autoplay": "Autoplay",
+    "visualEffects": "Visual Effects",
+    "snow": "Snow",
+    "scanlines": "Scanlines",
+    "cursor": "Custom Cursor",
+    "cursorPlaceholder": "Cursor image URL"
+  },
+  "links": {
+    "title": "Links",
+    "subtitle": "Add links to your social networks",
+    "addLink": "Add Link",
+    "platform": "Platform",
+    "url": "URL",
+    "label": "Label",
+    "noLinks": "No links added yet"
+  },
+  "connections": {
+    "title": "Connections",
+    "subtitle": "Connect external services",
+    "spotify": {
+      "title": "Spotify",
+      "description": "Show your currently playing track",
+      "connect": "Connect Spotify",
+      "disconnect": "Disconnect",
+      "connected": "Connected as"
+    },
+    "github": {
+      "title": "GitHub",
+      "description": "Display your repos and stats",
+      "connect": "Connect GitHub",
+      "disconnect": "Disconnect",
+      "connected": "Connected as"
+    }
+  },
+  "badges": {
+    "title": "Badges",
+    "subtitle": "Your achievements and rewards",
+    "available": "Available Badges",
+    "earned": "Earned",
+    "locked": "Locked",
+    "bughunter": "Bug Hunter",
+    "bughunterDesc": "Found and reported a bug",
+    "hacker": "Hacker",
+    "hackerDesc": "Found a security vulnerability",
+    "earlyAdopter": "Early Adopter",
+    "earlyAdopterDesc": "One of the first users",
+    "premium": "Premium",
+    "premiumDesc": "Premium user",
+    "localhost": "Localhost",
+    "localhostDesc": "Developer"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Statistics of your page",
+    "totalViews": "Total Views",
+    "visitorsToday": "Visitors Today",
+    "totalVisitors": "Total Visitors",
+    "conversionCtr": "Conversion (CTR)",
+    "linkStats": "Link Statistics",
+    "clicks": "clicks",
+    "ofAllClicks": "of all clicks"
+  },
+  "api": {
+    "title": "API",
+    "subtitle": "Access your data programmatically",
+    "tokens": "API Tokens",
+    "createToken": "Create Token",
+    "tokenName": "Token Name",
+    "noTokens": "No API tokens yet",
+    "rateLimit": "Rate Limit",
+    "requestsPerDay": "requests/day",
+    "lastUsed": "Last Used",
+    "never": "Never",
+    "copyToken": "Copy Token",
+    "deleteToken": "Delete Token",
+    "documentation": "Documentation"
+  },
+  "support": {
+    "title": "Support",
+    "subtitle": "Having a problem or suggestion? We'll help!",
+    "createTicket": "Create Ticket",
+    "yourTickets": "Your Tickets",
+    "noTickets": "You have no tickets yet",
+    "category": "Category",
+    "selectCategory": "Select category",
+    "categories": {
+      "banAppeal": "Ban Appeal",
+      "bugReport": "Bug Report",
+      "featureRequest": "Feature Request",
+      "accountIssue": "Account Issue",
+      "other": "Other"
+    },
+    "subject": "Subject",
+    "subjectPlaceholder": "Briefly describe the issue",
+    "message": "Message",
+    "messagePlaceholder": "Describe your problem or suggestion in detail...",
+    "emailForReply": "Email for reply",
+    "ticketSent": "Ticket sent!",
+    "willReply": "We will reply to the specified email soon",
+    "sendAnother": "Send another",
+    "send": "Send",
+    "formConsent": "By submitting the form, you agree to data processing",
+    "status": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "supportResponse": "Support response",
+    "faq": {
+      "title": "FAQ",
+      "responseTime": "How long to wait for a response?",
+      "responseTimeAnswer": "Usually we reply within 24-48 hours",
+      "banned": "I got banned, what to do?",
+      "bannedAnswer": "Choose 'Ban Appeal' category and describe the situation",
+      "foundBug": "Found a bug, where to report?",
+      "foundBugAnswer": "Choose 'Bug Report' and describe the problem in detail"
+    },
+    "info": "Log in to see your ticket history and receive responses.",
+    "infoAnonymous": "You can still submit a ticket without logging in - the response will be sent to the specified email."
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated",
+    "intro": "Welcome to bio.lonestill.uk! By using our service, you agree to follow these rules. Violation of rules may result in restricted access or account deletion.",
+    "prohibited": {
+      "title": "Prohibited Content",
+      "nsfw": "pornography, erotica, explicit images",
+      "violence": "Violence — shock content, gore, calls for violence",
+      "discrimination": "Discrimination — racism, sexism, homophobia and other hatred",
+      "illegal": "Illegal activity — drugs, weapons, fraud",
+      "spam": "Spam and advertising — mass mailing, intrusive advertising",
+      "phishing": "Phishing — attempts to steal other users' data"
+    },
+    "usernames": {
+      "title": "Usernames",
+      "offensive": "Offensive, racist, sexual nicknames are prohibited",
+      "impersonation": "Impersonating other people or organizations is prohibited",
+      "forceChange": "Administration reserves the right to forcibly change unacceptable nickname"
+    },
+    "security": {
+      "title": "Security",
+      "hacking": "Hacking attempts, vulnerability exploitation is prohibited",
+      "reportBugs": "Report discovered vulnerabilities to support (Bug Hunter badge!)",
+      "automation": "Use of bots and automation without permission is prohibited"
+    },
+    "respect": {
+      "title": "Respect for Others",
+      "beRespectful": "Treat other users with respect",
+      "noHarassment": "Insults, bullying, harassment are prohibited",
+      "noDoxxing": "Do not publish personal data of others (doxxing)"
+    },
+    "consequences": {
+      "title": "Consequences of Violations",
+      "intro": "Depending on the severity of the violation:",
+      "warning": "Warning — first violation",
+      "tempBan": "Temporary ban — repeated violations",
+      "permaBan": "Permanent ban — serious violations",
+      "note": "Administration reserves the right to ban users without warning in case of serious violations."
+    },
+    "contact": "Questions? Contact"
+  },
+  "banned": {
+    "title": "Account Banned",
+    "status": "access_denied",
+    "message": "Your account has been banned by an administrator for violating platform rules.",
+    "reasons": {
+      "title": "Possible reasons:",
+      "spam": "Spam or unwanted content",
+      "rules": "Violation of community rules",
+      "suspicious": "Suspicious activity",
+      "reports": "Multiple user reports"
+    },
+    "appealInfo": "If you believe the ban was a mistake, contact the administration.",
+    "contactSupport": "Contact Support",
+    "goHome": "Go Home"
+  },
+  "notFound": {
+    "title": "404",
+    "command": "find /page",
+    "error": "error: page not found",
+    "reasons": {
+      "title": "Possible reasons:",
+      "deleted": "The page was deleted or moved",
+      "noUser": "User does not exist",
+      "wrongUrl": "The link was entered incorrectly"
+    },
+    "goHome": "Go Home",
+    "createPage": "Create Page"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "subtitle": "Top profiles by activity",
+    "sortByViews": "By views",
+    "sortByClicks": "By clicks",
+    "sortByNew": "New this week",
+    "noProfiles": "No profiles in the leaderboard yet",
+    "rank": "Rank",
+    "user": "User",
+    "views": "Views",
+    "joined": "Joined"
+  },
+  "footer": {
+    "madeWith": "Made with",
+    "by": "by"
+  },
+  "languageSwitcher": {
+    "en": "English",
+    "ru": "Русский"
+  },
+  "apiDocs": {
+    "sidebar": {
+      "apiDocumentation": "API Documentation v1",
+      "search": "Search...",
+      "basics": "Basics",
+      "authentication": "Authentication",
+      "rateLimiting": "Rate Limiting",
+      "caching": "Caching",
+      "reference": "Reference",
+      "errors": "Error Codes",
+      "examples": "Code Examples",
+      "baseUrl": "Base URL"
+    },
+    "header": {
+      "title": "API Documentation",
+      "getApiKey": "Get API Key"
+    },
+    "auth": {
+      "title": "Authentication",
+      "description": "All requests require Bearer token in header",
+      "warning": "Never publish your API token in public repositories."
+    },
+    "rateLimit": {
+      "title": "Rate Limiting",
+      "description": "Limit:",
+      "limit": "requests/day",
+      "requestsPerDay": "requests/day",
+      "tokensPerAccount": "tokens/account",
+      "expiration": "expiration"
+    },
+    "cache": {
+      "title": "Caching",
+      "description": "Responses are cached on Vercel Edge:",
+      "endpoint": "Endpoint",
+      "cacheTime": "Cache",
+      "swr": "SWR"
+    },
+    "getProfile": {
+      "title": "Get Profile",
+      "description": "Returns profile data.",
+      "params": "Parameters",
+      "username": "Username",
+      "response": "Response"
+    },
+    "getUsers": {
+      "title": "List Users",
+      "description": "Returns a list of users with pagination.",
+      "queryParams": "Query parameters",
+      "limit": "Count (max: 100)",
+      "offset": "Offset",
+      "sort": "views | created | uid",
+      "response": "Response"
+    },
+    "errors": {
+      "title": "Error Codes",
+      "code": "Code",
+      "status": "Status",
+      "description": "Description",
+      "200": "Successful request",
+      "400": "Invalid parameters",
+      "401": "Invalid API token",
+      "404": "Resource not found",
+      "429": "Rate limit exceeded",
+      "500": "Server error"
+    },
+    "examples": {
+      "title": "Code Examples"
+    },
+    "cta": {
+      "title": "Ready to start?",
+      "description": "Create your API token right now.",
+      "button": "Create Token"
+    }
+  }
+}

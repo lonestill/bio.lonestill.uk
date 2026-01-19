@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { 
   Sparkles, 
   Music, 
@@ -12,55 +13,15 @@ import {
   Eye
 } from "lucide-react";
 
-const features = [
-  {
-    icon: Sparkles,
-    title: "Эффекты фона",
-    description: "Снег, дождь, северное сияние, звёзды, plasma и retro TV эффект. Оживи свою страницу.",
-    color: "purple",
-  },
-  {
-    icon: Palette,
-    title: "Эффекты никнейма",
-    description: "Радужный градиент, неоновое свечение, частицы разных цветов и плавные переливы.",
-    color: "violet",
-  },
-  {
-    icon: Music,
-    title: "Фоновая музыка",
-    description: "Добавь MP3 или YouTube трек. Музыка автоматически включится при входе на страницу.",
-    color: "fuchsia",
-  },
-  {
-    icon: LinkIcon,
-    title: "Стили ссылок",
-    description: "4 варианта оформления: glass, cards, pills или minimal. Выбери свой стиль.",
-    color: "pink",
-  },
-  {
-    icon: BarChart3,
-    title: "Аналитика",
-    description: "Отслеживай просмотры, уникальных посетителей и клики по ссылкам в реальном времени.",
-    color: "purple",
-  },
-  {
-    icon: Play,
-    title: "Click to Enter",
-    description: "Загадочный экран приветствия перед показом контента. Настраиваемый текст.",
-    color: "violet",
-  },
-  {
-    icon: Eye,
-    title: "Отображение статистики",
-    description: "Покажи просмотры, UID и дату регистрации прямо на странице. Или скрой — решать тебе.",
-    color: "fuchsia",
-  },
-  {
-    icon: Snowflake,
-    title: "Падающий снег",
-    description: "Отдельный эффект снежинок поверх контента. Создаёт уютную атмосферу.",
-    color: "pink",
-  },
+const featureKeys = [
+  { key: "backgrounds", icon: Sparkles, color: "purple" },
+  { key: "nickname", icon: Palette, color: "violet" },
+  { key: "music", icon: Music, color: "fuchsia" },
+  { key: "linkStyles", icon: LinkIcon, color: "pink" },
+  { key: "analytics", icon: BarChart3, color: "purple" },
+  { key: "clickToEnter", icon: Play, color: "violet" },
+  { key: "stats", icon: Eye, color: "fuchsia" },
+  { key: "snow", icon: Snowflake, color: "pink" },
 ];
 
 const colorClasses = {
@@ -91,6 +52,8 @@ const colorClasses = {
 };
 
 export function FeaturesGrid() {
+  const t = useTranslations("features");
+
   return (
     <section id="features" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
@@ -102,10 +65,10 @@ export function FeaturesGrid() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-mono font-bold text-white mb-4">
-            Всё что нужно для <span className="text-purple-400">идеальной</span> страницы
+            {t("title")} <span className="text-purple-400">{t("titleHighlight")}</span> {t("titleEnd")}
           </h2>
           <p className="text-neutral-400 font-mono max-w-xl mx-auto">
-            Полный набор инструментов для создания уникальной био-страницы
+            {t("subtitle")}
           </p>
         </motion.div>
 
@@ -116,13 +79,13 @@ export function FeaturesGrid() {
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
         >
-          {features.map((feature, index) => {
+          {featureKeys.map((feature, index) => {
             const colors = colorClasses[feature.color as keyof typeof colorClasses];
             const Icon = feature.icon;
             
             return (
               <motion.div
-                key={feature.title}
+                key={feature.key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -132,8 +95,12 @@ export function FeaturesGrid() {
                 <div className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center mb-4`}>
                   <Icon className={`w-6 h-6 ${colors.icon}`} />
                 </div>
-                <h3 className="text-lg font-mono font-semibold mb-2 text-white">{feature.title}</h3>
-                <p className="text-neutral-500 text-sm leading-relaxed">{feature.description}</p>
+                <h3 className="text-lg font-mono font-semibold mb-2 text-white">
+                  {t(`items.${feature.key}.title`)}
+                </h3>
+                <p className="text-neutral-500 text-sm leading-relaxed">
+                  {t(`items.${feature.key}.description`)}
+                </p>
                 
                 {/* Hover glow effect */}
                 <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${colors.glow} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />

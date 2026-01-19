@@ -37,6 +37,12 @@ export async function register(
 
     console.log("[REGISTER] FormData received, type:", typeof formData, "constructor:", formData.constructor?.name);
 
+    // Check terms acceptance
+    const termsAccepted = formData.get("terms") === "on";
+    if (!termsAccepted) {
+      return { error: "Необходимо принять правила использования" };
+    }
+
     const rawData = {
       username: formData.get("username") as string | null,
       email: formData.get("email") as string | null,

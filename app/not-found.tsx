@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { Header } from "@/components/header";
+import { getTranslations } from "next-intl/server";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const t = await getTranslations("notFound");
+
   return (
     <main className="min-h-screen bg-[#050505] text-white overflow-hidden">
       {/* Background Effects */}
@@ -37,7 +40,7 @@ export default function NotFound() {
           {/* Glitch 404 Number */}
           <div className="relative mb-8">
             <h1 className="text-[12rem] md:text-[16rem] font-mono font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-purple-400 via-purple-600 to-purple-900 select-none">
-              404
+              {t("title")}
             </h1>
             {/* Glitch layers */}
             <h1 
@@ -47,7 +50,7 @@ export default function NotFound() {
                 animationDuration: "3s"
               }}
             >
-              404
+              {t("title")}
             </h1>
             <h1 
               className="absolute inset-0 text-[12rem] md:text-[16rem] font-mono font-black leading-none tracking-tighter text-violet-500/20 select-none animate-pulse"
@@ -57,7 +60,7 @@ export default function NotFound() {
                 animationDelay: "0.5s"
               }}
             >
-              404
+              {t("title")}
             </h1>
           </div>
 
@@ -72,18 +75,18 @@ export default function NotFound() {
             
             <div className="font-mono text-sm space-y-2">
               <p className="text-neutral-500">
-                <span className="text-purple-400">$</span> find /page
+                <span className="text-purple-400">$</span> {t("command")}
               </p>
               <p className="text-red-400">
-                error: страница не найдена
+                {t("error")}
               </p>
               <p className="text-neutral-600 text-xs mt-4">
-                Возможные причины:
+                {t("reasons.title")}
               </p>
               <ul className="text-neutral-500 text-xs space-y-1 ml-4">
-                <li>• Страница была удалена или перемещена</li>
-                <li>• Пользователь не существует</li>
-                <li>• Ссылка введена неверно</li>
+                <li>• {t("reasons.deleted")}</li>
+                <li>• {t("reasons.noUser")}</li>
+                <li>• {t("reasons.wrongUrl")}</li>
               </ul>
             </div>
           </div>
@@ -102,7 +105,7 @@ export default function NotFound() {
                 <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                На главную
+                {t("goHome")}
               </span>
             </Link>
 
@@ -110,7 +113,7 @@ export default function NotFound() {
               href="/register"
               className="px-8 py-4 rounded-xl font-mono text-sm font-medium bg-neutral-900/50 border border-purple-500/20 text-neutral-300 hover:text-white hover:border-purple-500/40 hover:bg-neutral-800/50 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(147,51,234,0.15)]"
             >
-              Создать страницу
+              {t("createPage")}
             </Link>
           </div>
 
