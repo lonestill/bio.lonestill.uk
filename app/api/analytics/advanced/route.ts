@@ -8,13 +8,24 @@ import {
 } from "@/db/schema";
 import { eq, and, gte, lte, sql, desc } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import { validateRequest } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { lucia } from "@/lib/auth";
+import { SESSION_COOKIE_NAME } from "@/lib/auth-config";
 
 export async function GET(req: NextRequest) {
   try {
     // Validate user is authenticated
-    const { user } = await validateRequest();
-    if (!user) {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+    const sessionId = sessionCookie?.value ?? null;
+    
+    if (!sessionId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { session, user } = await lucia.validateSession(sessionId);
+    
+    if (!session || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
