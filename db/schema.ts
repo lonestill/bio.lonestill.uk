@@ -59,6 +59,15 @@ export const profiles = sqliteTable("profiles", {
       scanlines?: boolean;
       cursor?: string;
     };
+    badgeConfigs?: {
+      premium?: {
+        enabled?: boolean;
+        style?: "default" | "gradient" | "glow" | "animated";
+        position?: "before-name" | "after-name" | "below-name";
+        color?: string;
+        glowColor?: string;
+      };
+    };
   }>(),
 });
 

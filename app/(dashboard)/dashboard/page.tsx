@@ -15,6 +15,7 @@ import { AnalyticsPanel } from "@/components/dashboard/analytics-panel";
 import { BadgesPanel } from "@/components/dashboard/badges-panel";
 import { ConnectionsPanel } from "@/components/dashboard/connections-panel";
 import { ApiPanel } from "@/components/dashboard/api-panel";
+import { BadgeSettingsPanel } from "@/components/dashboard";
 
 interface PageProps {
   searchParams: Promise<{ tab?: string }>;
@@ -98,6 +99,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         return <ApiPanel />;
       case "analytics":
         return <AnalyticsPanel profile={profile} />;
+      case "premium-badge":
+        return <BadgeSettingsPanel profile={profile} userBadges={userBadges} />;
       default:
         return <ProfilePanel profile={profile} />;
     }

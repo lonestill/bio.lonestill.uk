@@ -37,3 +37,8 @@ next-env.d.ts
 
 # drizzle
 drizzle/
+
+# private data (passwords, backups)
+private/
+*.passwords.txt
+restored-passwords-*.txt

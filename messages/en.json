@@ -298,7 +298,10 @@
   "terms": {
     "title": "Terms of Service",
     "lastUpdated": "Last updated",
-    "intro": "Welcome to bio.lonestill.uk! By using our service, you agree to follow these rules. Violation of rules may result in restricted access or account deletion.",
+    "intro": {
+      "title": "Introduction",
+      "text": "Welcome to bio.lonestill.uk! By using our service, you agree to follow these rules. Violation of rules may result in restricted access or account deletion."
+    },
     "prohibited": {
       "title": "Prohibited Content",
       "nsfw": "pornography, erotica, explicit images",

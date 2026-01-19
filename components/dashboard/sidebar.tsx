@@ -17,6 +17,7 @@ import {
   Send,
   Key,
   Shield,
+  Crown,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -136,7 +137,7 @@ export function Sidebar({ username, displayName, avatarUrl, userRole }: SidebarP
             <div className="ml-auto w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
           </Link>
         )}
-        <Link
+      <Link
           href="https://t.me/gittyblog"
           target="_blank"
           rel="noopener noreferrer"

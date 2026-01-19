@@ -5,3 +5,4 @@ export { DesignPanel } from "./design-panel";
 export { EffectsPanel } from "./effects-panel";
 export { LinksPanel } from "./links-panel";
 export { AnalyticsPanel } from "./analytics-panel";
+export { BadgeSettingsPanel } from "./badge-settings-panel";
