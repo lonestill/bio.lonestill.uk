@@ -30,24 +30,18 @@ export function HeaderClient({ isAuthenticated, currentLocale }: HeaderClientPro
 
           {/* Navigation */}
           <div className="flex items-center gap-4 md:gap-6">
-            <Link
-              href="#features"
-              className="hidden md:block font-mono text-sm text-neutral-400 hover:text-purple-400 transition-colors"
-            >
-              {t("header.features")}
-            </Link>
-            <Link
-              href="#showcase"
-              className="hidden md:block font-mono text-sm text-neutral-400 hover:text-purple-400 transition-colors"
-            >
-              {t("header.demo")}
-            </Link>
+          
             <Link
               href="/leaderboard"
-              className="hidden md:flex items-center gap-1.5 font-mono text-sm text-neutral-400 hover:text-purple-400 transition-colors"
+              className="items-center gap-1.5 font-mono text-sm text-neutral-400 hover:text-purple-400 transition-colors"
             >
-              <span>🏆</span>
               <span>{t("common.leaderboard")}</span>
+            </Link>
+            <Link
+              href="/blog"
+              className="font-mono text-sm text-neutral-400 hover:text-purple-400 transition-colors"
+            >
+              Блог
             </Link>
             
             <LanguageSwitcher currentLocale={currentLocale} variant="compact" />
