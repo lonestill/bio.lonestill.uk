@@ -14,7 +14,6 @@ import {
   Zap,
   Code,
   Github,
-  Spotify,
   ArrowRight,
   CheckCircle2,
   Star,
