@@ -16,6 +16,7 @@ import {
   Music,
   Volume2,
   Play,
+  MessageSquare,
 } from "lucide-react";
 
 interface EffectsPanelProps {
@@ -74,6 +75,8 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
     musicUrl: modules.music?.url || "",
     musicVolume: modules.music?.volume || 50,
     musicAutoplay: modules.music?.autoplay !== false,
+    // Guestbook
+    guestbookEnabled: modules.guestbook?.enabled || false,
   });
 
   useEffect(() => {
@@ -115,6 +118,9 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
         url: effects.musicUrl,
         volume: effects.musicVolume,
         autoplay: effects.musicAutoplay,
+      },
+      guestbook: {
+        enabled: effects.guestbookEnabled,
       },
     };
     formDataObj.set("modulesJson", JSON.stringify(modulesJson));
@@ -351,6 +357,29 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
             <p className="text-xs font-mono text-neutral-600">
               Поддерживаются MP3 и YouTube ссылки
             </p>
+          </div>
+        </div>
+
+        {/* Guestbook */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-mono text-neutral-400 flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-neutral-500" />
+            Гостевая книга
+          </h3>
+          
+          <div className="p-4 rounded-xl bg-neutral-900/30 border border-neutral-800">
+            <label className="flex items-center justify-between cursor-pointer">
+              <div>
+                <span className="text-sm font-mono text-neutral-300">Включить гостевую книгу</span>
+                <p className="text-xs font-mono text-neutral-600 mt-1">
+                  Посетители смогут оставлять сообщения на вашей странице
+                </p>
+              </div>
+              <div
+                className={`toggle-switch ${effects.guestbookEnabled ? "active" : ""}`}
+                onClick={() => setEffects({ ...effects, guestbookEnabled: !effects.guestbookEnabled })}
+              />
+            </label>
           </div>
         </div>
 

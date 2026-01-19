@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { SpotifyWidget } from "@/components/spotify-widget";
+import { Guestbook } from "@/components/guestbook";
 
 // Normalize URL to ensure it has a protocol
 function normalizeUrl(url: string): string {
@@ -554,6 +555,10 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const spotifyEnabled = spotify.enabled !== false && spotify.connected;
   const showSpotifyCurrentTrack = spotify.showCurrentTrack !== false;
   const showSpotifyTopTracks = spotify.showTopTracks || false;
+
+  // Guestbook settings
+  const guestbook = modules.guestbook || {};
+  const guestbookEnabled = guestbook.enabled || false;
   
   // Theme
   const themeColors = profile.themeConfig?.colors || {};
@@ -1017,6 +1022,11 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
             />
           ))}
         </div>
+      )}
+
+      {/* Guestbook */}
+      {isUnlocked && guestbookEnabled && (
+        <Guestbook username={username} primaryColor={primaryColor} />
       )}
     </div>
   );

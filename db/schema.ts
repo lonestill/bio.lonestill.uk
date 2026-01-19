@@ -116,6 +116,21 @@ export const apiTokens = sqliteTable("api_tokens", {
   requestCountResetAt: integer("request_count_reset_at", { mode: "timestamp" }),
 });
 
+// Guestbook messages table
+export const guestbookMessages = sqliteTable("guestbook_messages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  profileUserId: text("profile_user_id")
+    .notNull()
+    .references(() => profiles.userId, { onDelete: "cascade" }),
+  authorId: text("author_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  message: text("message").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
@@ -124,3 +139,4 @@ export type ProfileView = typeof profileViews.$inferSelect;
 export type LinkClick = typeof linkClicks.$inferSelect;
 export type SpotifyToken = typeof spotifyTokens.$inferSelect;
 export type ApiToken = typeof apiTokens.$inferSelect;
+export type GuestbookMessage = typeof guestbookMessages.$inferSelect;
