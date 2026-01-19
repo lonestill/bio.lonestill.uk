@@ -15,6 +15,7 @@ import {
   Award,
   Plug,
   Send,
+  Key,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -30,6 +31,7 @@ const navigation = [
   { id: "links", label: "Ссылки", icon: Link2 },
   { id: "connections", label: "Подключения", icon: Plug },
   { id: "badges", label: "Бейджи", icon: Award },
+  { id: "api", label: "API", icon: Key },
   { id: "analytics", label: "Аналитика", icon: BarChart3 },
 ];
 

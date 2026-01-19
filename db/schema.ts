@@ -98,6 +98,24 @@ export const spotifyTokens = sqliteTable("spotify_tokens", {
   spotifyDisplayName: text("spotify_display_name"),
 });
 
+// API tokens table
+export const apiTokens = sqliteTable("api_tokens", {
+  id: text("id").primaryKey(), // Token ID (for management)
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  token: text("token").notNull().unique(), // The actual API token (hashed)
+  name: text("name").notNull(), // User-friendly name
+  lastUsedAt: integer("last_used_at", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  expiresAt: integer("expires_at", { mode: "timestamp" }), // Optional expiration
+  rateLimit: integer("rate_limit").notNull().default(1000), // Requests per day
+  requestCount: integer("request_count").notNull().default(0), // Today's requests
+  requestCountResetAt: integer("request_count_reset_at", { mode: "timestamp" }),
+});
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
@@ -105,3 +123,4 @@ export type NewProfile = typeof profiles.$inferInsert;
 export type ProfileView = typeof profileViews.$inferSelect;
 export type LinkClick = typeof linkClicks.$inferSelect;
 export type SpotifyToken = typeof spotifyTokens.$inferSelect;
+export type ApiToken = typeof apiTokens.$inferSelect;
