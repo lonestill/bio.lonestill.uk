@@ -16,12 +16,14 @@ import {
   Plug,
   Send,
   Key,
+  Shield,
 } from "lucide-react";
 
 interface SidebarProps {
   username: string;
   displayName?: string;
   avatarUrl?: string;
+  userRole?: string;
 }
 
 const navigation = [
@@ -35,7 +37,7 @@ const navigation = [
   { id: "analytics", label: "Аналитика", icon: BarChart3 },
 ];
 
-export function Sidebar({ username, displayName, avatarUrl }: SidebarProps) {
+export function Sidebar({ username, displayName, avatarUrl, userRole }: SidebarProps) {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "profile";
 
@@ -124,7 +126,17 @@ export function Sidebar({ username, displayName, avatarUrl }: SidebarProps) {
 
       {/* Bottom Section */}
       <div className="p-4 border-t border-purple-500/10">
-      <Link
+        {userRole === "admin" && (
+          <Link
+            href="/admin"
+            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-mono text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all group mb-1"
+          >
+            <Shield className="w-5 h-5 text-red-500 group-hover:text-red-400 transition-colors" />
+            <span>Админ-панель</span>
+            <div className="ml-auto w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+          </Link>
+        )}
+        <Link
           href="https://t.me/gittyblog"
           target="_blank"
           rel="noopener noreferrer"

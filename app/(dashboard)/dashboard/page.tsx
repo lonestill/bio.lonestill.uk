@@ -110,6 +110,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         username={user.username} 
         displayName={profile.displayName ?? undefined}
         avatarUrl={profile.avatarUrl ?? undefined}
+        userRole={user.role}
       />
 
       {/* Main Content */}
