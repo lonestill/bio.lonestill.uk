@@ -36,6 +36,7 @@ const navigation = [
   { id: "badges", label: "Бейджи", icon: Award },
   { id: "api", label: "API", icon: Key },
   { id: "analytics", label: "Аналитика", icon: BarChart3 },
+  { id: "advanced-analytics", label: "Расширенная аналитика", icon: BarChart3 },
 ];
 
 export function Sidebar({ username, displayName, avatarUrl, userRole }: SidebarProps) {

@@ -12,6 +12,7 @@ import { DesignPanel } from "@/components/dashboard/design-panel";
 import { EffectsPanel } from "@/components/dashboard/effects-panel";
 import { LinksPanel } from "@/components/dashboard/links-panel";
 import { AnalyticsPanel } from "@/components/dashboard/analytics-panel";
+import { AdvancedAnalyticsPanel } from "@/components/dashboard/advanced-analytics-panel";
 import { BadgesPanel } from "@/components/dashboard/badges-panel";
 import { ConnectionsPanel } from "@/components/dashboard/connections-panel";
 import { ApiPanel } from "@/components/dashboard/api-panel";
@@ -99,6 +100,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         return <ApiPanel />;
       case "analytics":
         return <AnalyticsPanel profile={profile} />;
+      case "advanced-analytics":
+        return <AdvancedAnalyticsPanel />;
       case "premium-badge":
         return <BadgeSettingsPanel profile={profile} userBadges={userBadges} />;
       default:

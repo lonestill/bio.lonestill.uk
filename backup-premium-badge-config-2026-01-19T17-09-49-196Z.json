@@ -1,0 +1,10 @@
+[
+  {
+    "user_id": "apeEYotdxfifVBg9LKegj",
+    "premium_badge_config": "{\"enabled\":true,\"style\":\"gradient\",\"position\":\"after-name\",\"color\":\"#fbbf24\",\"glowColor\":\"#fbbf24\"}"
+  },
+  {
+    "user_id": "5H1BK8HGsBivLnHnStu4S",
+    "premium_badge_config": "{\"enabled\":true,\"style\":\"gradient\",\"position\":\"after-name\",\"customText\":\"PREMIUM\",\"color\":\"#fbbf24\",\"glowColor\":\"#fbbf24\"}"
+  }
+]

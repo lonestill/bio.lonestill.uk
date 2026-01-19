@@ -174,6 +174,121 @@ export const supportTickets = sqliteTable("support_tickets", {
     .$defaultFn(() => new Date()),
 });
 
+// Advanced Analytics tables
+
+// Detailed page views with device/browser info
+export const pageViews = sqliteTable("page_views", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  sessionId: text("session_id").notNull(), // Unique session ID
+  profileUserId: text("profile_user_id")
+    .references(() => profiles.userId, { onDelete: "cascade" }),
+  visitorHash: text("visitor_hash").notNull(), // Hashed IP
+  
+  // Page info
+  path: text("path").notNull(), // e.g., /username, /blog, /dashboard
+  referrer: text("referrer"), // Where they came from
+  
+  // Device info
+  userAgent: text("user_agent"),
+  browser: text("browser"), // Chrome, Firefox, Safari, etc.
+  browserVersion: text("browser_version"),
+  os: text("os"), // Windows, macOS, Linux, iOS, Android
+  osVersion: text("os_version"),
+  device: text("device"), // desktop, mobile, tablet
+  screenWidth: integer("screen_width"),
+  screenHeight: integer("screen_height"),
+  
+  // Geographic info (optional, can be added via IP lookup service)
+  country: text("country"),
+  city: text("city"),
+  
+  // Timing
+  timeOnPage: integer("time_on_page"), // Seconds spent on page
+  viewedAt: integer("viewed_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+// User events (clicks, scrolls, hovers, etc.)
+export type EventType = "click" | "scroll" | "hover" | "focus" | "submit" | "custom";
+
+export const userEvents = sqliteTable("user_events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  sessionId: text("session_id").notNull(),
+  profileUserId: text("profile_user_id")
+    .references(() => profiles.userId, { onDelete: "cascade" }),
+  visitorHash: text("visitor_hash").notNull(),
+  
+  // Event details
+  eventType: text("event_type").$type<EventType>().notNull(),
+  eventName: text("event_name").notNull(), // e.g., "link_click", "social_button_click"
+  elementId: text("element_id"), // HTML element ID
+  elementClass: text("element_class"), // HTML element class
+  elementText: text("element_text"), // Text content of element
+  
+  // Event data (JSON)
+  eventData: text("event_data", { mode: "json" }).$type<Record<string, any>>(),
+  
+  // Page context
+  pageUrl: text("page_url").notNull(),
+  
+  // Timing
+  eventedAt: integer("evented_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+// User sessions with aggregated data
+export const userSessions = sqliteTable("user_sessions", {
+  sessionId: text("session_id").primaryKey(),
+  profileUserId: text("profile_user_id")
+    .references(() => profiles.userId, { onDelete: "cascade" }),
+  visitorHash: text("visitor_hash").notNull(),
+  
+  // Session info
+  startedAt: integer("started_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  endedAt: integer("ended_at", { mode: "timestamp" }),
+  duration: integer("duration"), // Total session duration in seconds
+  
+  // Device info (captured at session start)
+  browser: text("browser"),
+  os: text("os"),
+  device: text("device"),
+  country: text("country"),
+  
+  // Session stats
+  pageViews: integer("page_views").notNull().default(0),
+  events: integer("events").notNull().default(0),
+  
+  // Entry/exit
+  entryPage: text("entry_page"), // First page visited
+  exitPage: text("exit_page"), // Last page visited
+  referrer: text("referrer"), // Original referrer
+});
+
+// Custom analytics events (for special tracking)
+export const analyticsEvents = sqliteTable("analytics_events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  profileUserId: text("profile_user_id")
+    .references(() => profiles.userId, { onDelete: "cascade" }),
+  
+  // Event details
+  eventCategory: text("event_category").notNull(), // e.g., "engagement", "conversion"
+  eventAction: text("event_action").notNull(), // e.g., "signup", "premium_click"
+  eventLabel: text("event_label"), // Optional label
+  eventValue: integer("event_value"), // Optional numeric value
+  
+  // Metadata
+  metadata: text("metadata", { mode: "json" }).$type<Record<string, any>>(),
+  
+  // Timing
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
@@ -184,3 +299,7 @@ export type SpotifyToken = typeof spotifyTokens.$inferSelect;
 export type ApiToken = typeof apiTokens.$inferSelect;
 export type GuestbookMessage = typeof guestbookMessages.$inferSelect;
 export type SupportTicket = typeof supportTickets.$inferSelect;
+export type PageView = typeof pageViews.$inferSelect;
+export type UserEvent = typeof userEvents.$inferSelect;
+export type UserSession = typeof userSessions.$inferSelect;
+export type AnalyticsEvent = typeof analyticsEvents.$inferSelect;
