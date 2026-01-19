@@ -1,5 +1,8 @@
 import { lucia } from "@/lib/auth";
 import { SESSION_COOKIE_NAME } from "@/lib/auth-config";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -20,6 +23,19 @@ export default async function DashboardLayout({
 
   if (!session) {
     redirect("/login");
+  }
+
+  // Check if user is banned
+  const user = await db
+    .select({ role: users.role })
+    .from(users)
+    .where(eq(users.id, session.userId))
+    .get();
+
+  if (!user || user.role === "banned") {
+    // Invalidate session and redirect to banned page
+    await lucia.invalidateSession(session.id);
+    redirect("/banned");
   }
 
   return (

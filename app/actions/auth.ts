@@ -182,6 +182,11 @@ export async function login(
     return { error: "Invalid username or password." };
   }
 
+  // Check if user is banned
+  if (user.role === "banned") {
+    return { error: "Ваш аккаунт заблокирован." };
+  }
+
   // Verify password
   const validPassword = await new Argon2id().verify(user.passwordHash, password);
 
