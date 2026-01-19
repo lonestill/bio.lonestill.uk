@@ -24,13 +24,19 @@ import {
 
 // API Documentation Data
 const API_SECTIONS = [
-  { id: "authentication", title: "Аутентификация", icon: Key },
-  { id: "rate-limiting", title: "Rate Limiting", icon: Activity },
-  { id: "caching", title: "Кэширование", icon: Zap },
-  { id: "get-profile", title: "GET /profile/:username", icon: User },
-  { id: "get-users", title: "GET /users", icon: Users },
-  { id: "errors", title: "Коды ошибок", icon: AlertTriangle },
-  { id: "examples", title: "Примеры кода", icon: Code },
+  { category: "Основы", items: [
+    { id: "authentication", title: "Аутентификация", icon: Key },
+    { id: "rate-limiting", title: "Rate Limiting", icon: Activity },
+    { id: "caching", title: "Кэширование", icon: Zap },
+  ]},
+  { category: "API Reference", items: [
+    { id: "get-profile", title: "GET /profile/:username", icon: User },
+    { id: "get-users", title: "GET /users", icon: Users },
+  ]},
+  { category: "Справочник", items: [
+    { id: "errors", title: "Коды ошибок", icon: AlertTriangle },
+    { id: "examples", title: "Примеры кода", icon: Code },
+  ]},
 ];
 
 const ERROR_CODES = [
@@ -123,7 +129,10 @@ export default function ApiDocsPage() {
   const filteredSections = useMemo(() => {
     if (!searchQuery) return API_SECTIONS;
     const query = searchQuery.toLowerCase();
-    return API_SECTIONS.filter((s) => s.title.toLowerCase().includes(query));
+    return API_SECTIONS.map(category => ({
+      ...category,
+      items: category.items.filter(item => item.title.toLowerCase().includes(query))
+    })).filter(category => category.items.length > 0);
   }, [searchQuery]);
 
   const scrollToSection = (id: string) => {
@@ -159,25 +168,36 @@ export default function ApiDocsPage() {
         </div>
 
         {/* Navigation */}
-        <nav className="px-3 py-2 space-y-1">
-          {filteredSections.map((section) => {
-            const Icon = section.icon;
-            const isActive = activeSection === section.id;
-            return (
-              <button
-                key={section.id}
-                onClick={() => scrollToSection(section.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all ${
-                  isActive
-                    ? "bg-purple-600/20 text-purple-400 border border-purple-500/30"
-                    : "text-neutral-400 hover:text-white hover:bg-neutral-800/50"
-                }`}
-              >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span className="font-mono text-sm">{section.title}</span>
-              </button>
-            );
-          })}
+        <nav className="px-3 py-2 space-y-6">
+          {filteredSections.map((category) => (
+            <div key={category.category}>
+              <div className="px-3 mb-2">
+                <h3 className="text-xs font-mono font-semibold text-neutral-500 uppercase tracking-wider">
+                  {category.category}
+                </h3>
+              </div>
+              <div className="space-y-1">
+                {category.items.map((section) => {
+                  const Icon = section.icon;
+                  const isActive = activeSection === section.id;
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => scrollToSection(section.id)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all ${
+                        isActive
+                          ? "bg-purple-600/20 text-purple-400 border border-purple-500/30"
+                          : "text-neutral-400 hover:text-white hover:bg-neutral-800/50"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 shrink-0" />
+                      <span className="font-mono text-sm">{section.title}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* Base URL */}
@@ -213,7 +233,15 @@ export default function ApiDocsPage() {
 
         {/* Content */}
         <div className="px-12 py-10">
-          <div className="space-y-16">
+          <div className="space-y-20">
+            {/* Getting Started Section */}
+            <div className="space-y-12">
+              <div className="border-b border-neutral-800 pb-2">
+                <h2 className="text-sm font-mono font-semibold text-neutral-500 uppercase tracking-wider">
+                  Основы
+                </h2>
+              </div>
+
             {/* Authentication */}
             <section id="authentication" className="scroll-mt-20 space-y-6">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
@@ -234,7 +262,7 @@ export default function ApiDocsPage() {
             </section>
 
             {/* Rate Limiting */}
-            <section id="rate-limiting" className="scroll-mt-20 space-y-6">
+            <section id="rate-limiting" className="scroll-mt-20 space-y-6 pt-8 border-t border-neutral-800/50">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <Activity className="w-6 h-6 text-purple-400" />
                 Rate Limiting
@@ -260,7 +288,7 @@ X-RateLimit-Reset: 1704067200`} />
             </section>
 
             {/* Caching */}
-            <section id="caching" className="scroll-mt-20 space-y-6">
+            <section id="caching" className="scroll-mt-20 space-y-6 pt-8 border-t border-neutral-800/50">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <Zap className="w-6 h-6 text-purple-400" />
                 Кэширование
@@ -290,6 +318,15 @@ X-RateLimit-Reset: 1704067200`} />
                 </table>
               </div>
             </section>
+            </div>
+
+            {/* API Reference Section */}
+            <div className="space-y-12 border-t border-neutral-800 pt-12">
+              <div className="border-b border-neutral-800 pb-2">
+                <h2 className="text-sm font-mono font-semibold text-neutral-500 uppercase tracking-wider">
+                  API Reference
+                </h2>
+              </div>
 
             {/* GET Profile */}
             <section id="get-profile" className="scroll-mt-20 space-y-6">
@@ -336,7 +373,7 @@ X-RateLimit-Reset: 1704067200`} />
             </section>
 
             {/* GET Users */}
-            <section id="get-users" className="scroll-mt-20 space-y-6">
+            <section id="get-users" className="scroll-mt-20 space-y-6 pt-8 border-t border-neutral-800/50">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <Users className="w-6 h-6 text-purple-400" />
                 Список пользователей
@@ -386,6 +423,15 @@ X-RateLimit-Reset: 1704067200`} />
                 </div>
               </EndpointCard>
             </section>
+            </div>
+
+            {/* Reference Section */}
+            <div className="space-y-12 border-t border-neutral-800 pt-12">
+              <div className="border-b border-neutral-800 pb-2">
+                <h2 className="text-sm font-mono font-semibold text-neutral-500 uppercase tracking-wider">
+                  Справочник
+                </h2>
+              </div>
 
             {/* Errors */}
             <section id="errors" className="scroll-mt-20 space-y-6">
@@ -416,7 +462,7 @@ X-RateLimit-Reset: 1704067200`} />
             </section>
 
             {/* Examples */}
-            <section id="examples" className="scroll-mt-20 space-y-6">
+            <section id="examples" className="scroll-mt-20 space-y-6 pt-8 border-t border-neutral-800/50">
               <h2 className="text-2xl font-mono font-bold text-white flex items-center gap-3">
                 <Code className="w-6 h-6 text-purple-400" />
                 Примеры кода
@@ -475,6 +521,7 @@ curl "https://bio.lonestill.uk/api/v1/users?limit=10&sort=views" \\
                 </div>
               </div>
             </section>
+            </div>
 
             {/* CTA */}
             <section className="pt-8 border-t border-neutral-800">
