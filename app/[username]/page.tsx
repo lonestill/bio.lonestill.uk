@@ -78,6 +78,7 @@ export default async function UserProfilePage({ params }: PageProps) {
         createdAt={userData.createdAt}
         badges={userBadges}
         uniqueViews={uniqueViews}
+        userRole={userData.role}
       />
     </main>
   );

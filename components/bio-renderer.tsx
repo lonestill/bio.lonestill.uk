@@ -42,6 +42,7 @@ interface BioRendererProps {
   createdAt?: Date;
   badges?: BadgeType[];
   uniqueViews?: number;
+  userRole?: string;
 }
 
 // Badge info for rendering
@@ -381,7 +382,7 @@ function GitHubWidget({
   );
 }
 
-export function BioRenderer({ profile, username, numericUid, createdAt, badges = [], uniqueViews = 0 }: BioRendererProps) {
+export function BioRenderer({ profile, username, numericUid, createdAt, badges = [], uniqueViews = 0, userRole }: BioRendererProps) {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [hasTrackedView, setHasTrackedView] = useState(false);
   const [bioText, setBioText] = useState("");
@@ -965,6 +966,27 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
                   Создано на bio.lonestill.uk
                 </Link>
               </motion.div>
+
+              {/* Admin version badge */}
+              {userRole === "admin" && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.5 }}
+                  className="fixed bottom-4 left-4 z-50"
+                >
+                  <div 
+                    className="px-3 py-1.5 rounded-lg text-[10px] font-mono backdrop-blur-md border"
+                    style={{
+                      color: `${primaryColor}`,
+                      backgroundColor: `rgba(0,0,0,0.5)`,
+                      borderColor: `${primaryColor}30`,
+                    }}
+                  >
+                    <span className="opacity-50">build:</span> v0.0.1-dev
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
