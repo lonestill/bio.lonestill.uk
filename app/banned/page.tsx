@@ -82,13 +82,13 @@ export default function BannedPage() {
               На главную
             </Link>
 
-            <a
-              href="mailto:support@lonestill.uk"
+            <Link
+              href="/support"
               className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-mono text-sm font-medium bg-red-600/20 border border-red-500/20 text-red-400 hover:bg-red-600/30 hover:border-red-500/30 transition-all duration-300"
             >
               <Mail className="w-4 h-4" />
               Связаться с поддержкой
-            </a>
+            </Link>
           </div>
 
           {/* Decorative elements */}

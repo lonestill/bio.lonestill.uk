@@ -131,6 +131,40 @@ export const guestbookMessages = sqliteTable("guestbook_messages", {
     .$defaultFn(() => new Date()),
 });
 
+// Support tickets table
+export type TicketStatus = "open" | "in_progress" | "resolved" | "closed";
+export type TicketCategory = "ban_appeal" | "bug_report" | "feature_request" | "account_issue" | "other";
+
+export const supportTickets = sqliteTable("support_tickets", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  
+  // Author info (can be null for anonymous/banned users)
+  userId: text("user_id").references(() => users.id, { onDelete: "set null" }),
+  email: text("email").notNull(), // Required for contact
+  username: text("username"), // Optional, for context
+  
+  // Ticket details
+  category: text("category").$type<TicketCategory>().notNull(),
+  subject: text("subject").notNull(),
+  message: text("message").notNull(),
+  
+  // Status
+  status: text("status").$type<TicketStatus>().notNull().default("open"),
+  
+  // Admin response
+  adminId: text("admin_id").references(() => users.id, { onDelete: "set null" }),
+  adminResponse: text("admin_response"),
+  respondedAt: integer("responded_at", { mode: "timestamp" }),
+  
+  // Timestamps
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Profile = typeof profiles.$inferSelect;
@@ -140,3 +174,4 @@ export type LinkClick = typeof linkClicks.$inferSelect;
 export type SpotifyToken = typeof spotifyTokens.$inferSelect;
 export type ApiToken = typeof apiTokens.$inferSelect;
 export type GuestbookMessage = typeof guestbookMessages.$inferSelect;
+export type SupportTicket = typeof supportTickets.$inferSelect;

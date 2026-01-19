@@ -15,6 +15,7 @@ import {
   ArrowLeft,
   Database,
   Activity,
+  Headphones,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -26,6 +27,7 @@ interface AdminSidebarProps {
 const navigation = [
   { id: "overview", label: "Обзор", icon: Activity },
   { id: "users", label: "Пользователи", icon: Users },
+  { id: "tickets", label: "Поддержка", icon: Headphones },
   { id: "analytics", label: "Аналитика", icon: BarChart3 },
   { id: "guestbook", label: "Гостевая книга", icon: MessageSquare },
   { id: "tokens", label: "API токены", icon: Key },

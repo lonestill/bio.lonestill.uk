@@ -13,6 +13,7 @@ import {
   GuestbookPanel,
   TokensPanel,
   SystemPanel,
+  TicketsPanel,
 } from "@/components/admin";
 
 interface PageProps {
@@ -64,6 +65,8 @@ export default async function AdminPage({ searchParams }: PageProps) {
         return <OverviewPanel />;
       case "users":
         return <UsersPanel />;
+      case "tickets":
+        return <TicketsPanel />;
       case "analytics":
         return <AnalyticsAdminPanel />;
       case "guestbook":
