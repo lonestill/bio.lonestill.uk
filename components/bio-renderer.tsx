@@ -23,6 +23,7 @@ import {
 import Link from "next/link";
 import { SpotifyWidget } from "@/components/spotify-widget";
 import { Guestbook } from "@/components/guestbook";
+import { HelloKittyFrame } from "@/components/hello-kitty-frame";
 
 // Normalize URL to ensure it has a protocol
 function normalizeUrl(url: string): string {
@@ -52,6 +53,7 @@ const BADGE_INFO: Record<BadgeType, { name: string; icon: React.ReactNode; color
   early_adopter: { name: "Early Adopter", icon: <Star className="w-3.5 h-3.5" />, color: "#f59e0b" },
   premium: { name: "Premium", icon: <Crown className="w-3.5 h-3.5" />, color: "#a855f7" },
   localhost: { name: "127.0.0.1", icon: <Home className="w-3.5 h-3.5" />, color: "#64748b" },
+  hello_kitty: { name: "Hello Kitty 🎀", icon: <span className="text-sm">🐱</span>, color: "#ff69b4" },
 };
 
 // Get favicon URL from Google's free API
@@ -542,6 +544,10 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const showBadges = display.showBadges !== false; // По умолчанию включено
   const visibleBadges: BadgeType[] = display.visibleBadges !== undefined ? display.visibleBadges : badges;
   
+  // Badge configurations
+  const badgeConfigs = modules.badgeConfigs || {};
+  const helloKittyEnabled = badgeConfigs.hello_kitty?.enabled !== false; // По умолчанию включено
+  
   // GitHub settings
   const github = modules.github || {};
   const githubEnabled = github.enabled !== false;
@@ -788,6 +794,13 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
                           boxShadow: `0 0 40px ${primaryColor}40`,
                         }}
                       />
+                      {/* Hello Kitty Frame */}
+                      {badges.includes("hello_kitty") && visibleBadges.includes("hello_kitty") && helloKittyEnabled && (
+                        <HelloKittyFrame 
+                          size={typeof window !== 'undefined' && window.innerWidth < 768 ? 112 : 144} 
+                          avatarShape={avatarShape}
+                        />
+                      )}
                     </div>
                   </motion.div>
                 )}

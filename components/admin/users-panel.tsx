@@ -57,6 +57,7 @@ const BADGE_INFO: Record<BadgeType, { label: string; icon: React.ComponentType<{
   early_adopter: { label: "Early Adopter", icon: Sparkles },
   premium: { label: "Premium", icon: Crown },
   localhost: { label: "Localhost", icon: Server },
+  hello_kitty: { label: "Hello Kitty", icon: Award },
 };
 
 export function UsersPanel() {

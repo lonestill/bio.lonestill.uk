@@ -39,13 +39,20 @@ export function BadgeSettingsPanel({ profile, userBadges }: BadgeSettingsPanelPr
     glowColor: "#a855f7",
   };
 
+  const helloKittyConfig = modules.badgeConfigs?.hello_kitty || {
+    enabled: true,
+  };
+
   const [enabled, setEnabled] = useState(badgeConfig.enabled ?? true);
   const [style, setStyle] = useState<string>(badgeConfig.style || "default");
   const [position, setPosition] = useState<string>(badgeConfig.position || "after-name");
   const [color, setColor] = useState(badgeConfig.color || "#a855f7");
   const [glowColor, setGlowColor] = useState(badgeConfig.glowColor || "#a855f7");
 
+  const [helloKittyEnabled, setHelloKittyEnabled] = useState(helloKittyConfig.enabled ?? true);
+
   const hasPremiumBadge = userBadges.includes("premium");
+  const hasHelloKittyBadge = userBadges.includes("hello_kitty");
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -66,6 +73,9 @@ export function BadgeSettingsPanel({ profile, userBadges }: BadgeSettingsPanelPr
           position,
           color,
           glowColor,
+        },
+        hello_kitty: {
+          enabled: helloKittyEnabled,
         },
       },
     };
@@ -253,6 +263,61 @@ export function BadgeSettingsPanel({ profile, userBadges }: BadgeSettingsPanelPr
           )}
         </div>
       </div>
+
+      {/* Hello Kitty Badge Settings */}
+      {hasHelloKittyBadge && (
+        <div className="space-y-4 p-6 rounded-xl border border-pink-500/30 bg-gradient-to-br from-pink-500/10 to-purple-500/10">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">🐱🎀</span>
+            <div>
+              <h3 className="font-bold text-lg text-pink-300">Hello Kitty Frame</h3>
+              <p className="text-sm text-neutral-400">
+                Котик смотрит из-за вашего аватара
+              </p>
+            </div>
+          </div>
+
+          {/* Enable/Disable */}
+          <div className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Показывать рамку Hello Kitty</label>
+              <button
+                onClick={() => setHelloKittyEnabled(!helloKittyEnabled)}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  helloKittyEnabled ? "bg-pink-500" : "bg-neutral-700"
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    helloKittyEnabled ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Preview */}
+          {helloKittyEnabled && (
+            <div className="rounded-xl border border-neutral-700 bg-neutral-900/50 p-6">
+              <p className="text-xs text-neutral-500 mb-3 uppercase tracking-wide text-center">Предпросмотр</p>
+              <div className="flex justify-center">
+                <div className="relative w-24 h-24">
+                  <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-3xl">
+                    😊
+                  </div>
+                  <div className="absolute inset-0 border-4 border-pink-400 rounded-full shadow-lg shadow-pink-400/50" />
+                  <div className="absolute -top-2 -right-2 text-xl animate-bounce">
+                    🐱🎀
+                  </div>
+                  <div className="absolute -bottom-1 -left-1 text-sm">💗</div>
+                  <div className="absolute -top-1 -left-1 text-xs">🎀</div>
+                  <div className="absolute -bottom-1 -right-1 text-xs">✨</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Save Button */}
       <button

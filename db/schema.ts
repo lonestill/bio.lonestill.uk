@@ -1,7 +1,7 @@
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 // Badge types
-export type BadgeType = "bughunter" | "hacker" | "early_adopter" | "premium" | "localhost";
+export type BadgeType = "bughunter" | "hacker" | "early_adopter" | "premium" | "localhost" | "hello_kitty";
 
 export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
@@ -66,6 +66,9 @@ export const profiles = sqliteTable("profiles", {
         position?: "before-name" | "after-name" | "below-name";
         color?: string;
         glowColor?: string;
+      };
+      hello_kitty?: {
+        enabled?: boolean;
       };
     };
   }>(),

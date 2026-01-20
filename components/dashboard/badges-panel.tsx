@@ -77,6 +77,15 @@ const ALL_BADGES: BadgeInfo[] = [
     color: "#64748b",
     hint: "Только для локальной разработки",
   },
+  {
+    id: "hello_kitty",
+    name: "Hello Kitty 🎀",
+    description: "Секретный бейдж котика",
+    icon: <span className="text-2xl">🐱</span>,
+    color: "#ff69b4",
+    secret: true,
+    hint: "Найди секрет...",
+  },
 ];
 
 export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps) {
