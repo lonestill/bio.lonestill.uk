@@ -24,6 +24,7 @@ import Link from "next/link";
 import { SpotifyWidget } from "@/components/spotify-widget";
 import { Guestbook } from "@/components/guestbook";
 import { HelloKittyFrame } from "@/components/hello-kitty-frame";
+import { UidDisplay } from "@/components/uid-display";
 
 // Normalize URL to ensure it has a protocol
 function normalizeUrl(url: string): string {
@@ -879,10 +880,12 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
                       </div>
                     )}
                     {showUid && numericUid && (
-                      <div className="flex items-center gap-1.5">
-                        <Hash className="w-4 h-4" />
-                        <span className="font-mono text-xs">#{numericUid}</span>
-                      </div>
+                      <UidDisplay
+                        uid={numericUid}
+                        username={username}
+                        primaryColor={primaryColor}
+                        textColor={textColor}
+                      />
                     )}
                     {showCreatedAt && createdAt && (
                       <div className="flex items-center gap-1.5">
