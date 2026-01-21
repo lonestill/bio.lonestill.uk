@@ -269,13 +269,11 @@ export async function GET(req: NextRequest) {
       .from(users)
       .get();
 
+    // Active users = уникальные залогиненные пользователи с неистекшими сессиями
     const activeUsers = await db
-      .select({ count: sql<number>`COUNT(DISTINCT ${pageViews.profileUserId})` })
-      .from(pageViews)
-      .where(and(
-        gte(pageViews.viewedAt, startDate),
-        isNotNull(pageViews.profileUserId)
-      ))
+      .select({ count: sql<number>`COUNT(DISTINCT ${sessions.userId})` })
+      .from(sessions)
+      .where(gte(sessions.expiresAt, now))
       .get();
 
     return NextResponse.json({

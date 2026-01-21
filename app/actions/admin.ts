@@ -74,7 +74,14 @@ export async function updateUserRole(userId: string, newRole: string) {
 export async function updateUserBadges(userId: string, badges: BadgeType[]) {
   await checkAdminAccess();
 
-  const validBadges: BadgeType[] = ["bughunter", "hacker", "early_adopter", "premium", "localhost"];
+  const validBadges: BadgeType[] = [
+    "bughunter",
+    "hacker",
+    "early_adopter",
+    "premium",
+    "localhost",
+    "hello_kitty",
+  ];
   const filteredBadges = badges.filter((b) => validBadges.includes(b));
 
   await db.update(users).set({ badges: filteredBadges }).where(eq(users.id, userId));
