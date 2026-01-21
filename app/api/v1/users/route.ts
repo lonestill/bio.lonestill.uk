@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     const whereClause = filters.length > 0 ? and(...filters) : undefined;
 
     // Get users with view counts
-    let usersQuery = db
+    const usersQueryBase = db
       .select({
         id: users.id,
         username: users.username,
@@ -83,11 +83,7 @@ export async function GET(request: NextRequest) {
       .from(users)
       .leftJoin(profiles, eq(users.id, profiles.userId));
 
-    if (whereClause) {
-      usersQuery = usersQuery.where(whereClause);
-    }
-
-    const usersWithViews = await usersQuery
+    const usersWithViews = await (whereClause ? usersQueryBase.where(whereClause) : usersQueryBase)
       .orderBy(
         sortBy === "created"
           ? desc(users.createdAt)
@@ -100,13 +96,8 @@ export async function GET(request: NextRequest) {
       .all();
 
     // Get total count
-    let totalQuery = db.select({ count: sql<number>`COUNT(*)` }).from(users);
-
-    if (whereClause) {
-      totalQuery = totalQuery.leftJoin(profiles, eq(users.id, profiles.userId)).where(whereClause);
-    }
-
-    const totalResult = await totalQuery.get();
+    const totalQueryBase = db.select({ count: sql<number>`COUNT(*)` }).from(users).leftJoin(profiles, eq(users.id, profiles.userId));
+    const totalResult = await (whereClause ? totalQueryBase.where(whereClause) : totalQueryBase).get();
 
     const total = totalResult?.count || 0;
 
