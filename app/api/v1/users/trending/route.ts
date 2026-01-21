@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
   const whereClause = filters.length ? and(...filters) : undefined;
 
-  let baseQuery = db
+  const baseQuery = db
     .select({
       id: users.id,
       username: users.username,
@@ -58,21 +58,14 @@ export async function GET(request: NextRequest) {
     .from(users)
     .leftJoin(profiles, eq(users.id, profiles.userId));
 
-  if (whereClause) {
-    baseQuery = baseQuery.where(whereClause);
-  }
-
-  const rows = await baseQuery
+  const rows = await (whereClause ? baseQuery.where(whereClause) : baseQuery)
     .orderBy(desc(sql`recent_views`), desc(users.createdAt))
     .limit(limit)
     .offset(offset)
     .all();
 
-  let totalQuery = db.select({ count: sql<number>`COUNT(*)` }).from(users);
-  if (whereClause) {
-    totalQuery = totalQuery.leftJoin(profiles, eq(users.id, profiles.userId)).where(whereClause);
-  }
-  const totalResult = await totalQuery.get();
+  const totalQueryBase = db.select({ count: sql<number>`COUNT(*)` }).from(users).leftJoin(profiles, eq(users.id, profiles.userId));
+  const totalResult = await (whereClause ? totalQueryBase.where(whereClause) : totalQueryBase).get();
   const total = totalResult?.count || 0;
 
   const data = rows.map((u) => ({
