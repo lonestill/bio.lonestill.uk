@@ -800,14 +800,31 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
             >
               {/* Profile Card */}
               <div
-                className="rounded-3xl p-8 md:p-10"
+                className="rounded-3xl p-8 md:p-10 relative"
                 style={{
                   backgroundColor: `rgba(0,0,0,${cardOpacity * 0.5})`,
-                  border: `1px solid rgba(255,255,255,0.1)`,
+                  border: (activeFrame === 'hello_kitty' || (!activeFrame && badges.includes('hello_kitty'))) 
+                    ? `3px solid #ff69b4` 
+                    : `1px solid rgba(255,255,255,0.1)`,
                   backdropFilter: "blur(40px)",
-                  boxShadow: `0 0 80px ${primaryColor}15`,
+                  boxShadow: (activeFrame === 'hello_kitty' || (!activeFrame && badges.includes('hello_kitty')))
+                    ? `0 0 30px #ff69b480, 0 0 60px #ff69b440, inset 0 0 30px #ff69b410`
+                    : `0 0 80px ${primaryColor}15`,
                 }}
               >
+                {/* Hello Kitty corner decorations */}
+                {(activeFrame === 'hello_kitty' || (!activeFrame && badges.includes('hello_kitty'))) && (
+                  <>
+                    {/* Top left bow */}
+                    <div className="absolute -top-3 -left-3 text-2xl animate-bounce" style={{ animationDuration: '2s' }}>🎀</div>
+                    {/* Top right heart */}
+                    <div className="absolute -top-2 -right-2 text-xl animate-pulse">💖</div>
+                    {/* Bottom left paw */}
+                    <div className="absolute -bottom-2 -left-2 text-xl animate-pulse" style={{ animationDelay: '0.5s' }}>🐾</div>
+                    {/* Bottom right star */}
+                    <div className="absolute -bottom-2 -right-2 text-xl animate-bounce" style={{ animationDuration: '2.5s' }}>⭐</div>
+                  </>
+                )}
                 {/* Avatar */}
                 {profile.avatarUrl && (
                   <motion.div
