@@ -182,7 +182,7 @@ export function ProfilePanel({ profile }: ProfilePanelProps) {
               value={formData.bioText}
               onChange={(e) => setFormData({ ...formData, bioText: e.target.value })}
               rows={4}
-              maxLength={500}
+              maxLength={1000}
               className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
               placeholder="Расскажите о себе..."
             />
