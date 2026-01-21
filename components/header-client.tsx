@@ -38,6 +38,12 @@ export function HeaderClient({ isAuthenticated, currentLocale }: HeaderClientPro
               <span>{t("common.leaderboard")}</span>
             </Link>
             <Link
+              href="/faq"
+              className="font-mono text-sm text-neutral-400 hover:text-purple-400 transition-colors"
+            >
+              FAQ
+            </Link>
+            <Link
               href="/blog"
               className="font-mono text-sm text-neutral-400 hover:text-purple-400 transition-colors"
             >

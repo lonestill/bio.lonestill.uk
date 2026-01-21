@@ -460,5 +460,203 @@
       "description": "Create your API token right now.",
       "button": "Create Token"
     }
+  },
+  "faq": {
+    "hero": {
+      "badge": "Everything in one place",
+      "title": "FAQ about lonestill.bio",
+      "subtitle": "Accounts, profiles, badges, API, analytics, design, effects, and more — without spoilers about hidden badges."
+    },
+    "nav": {
+      "account": "Account & Auth",
+      "profiles": "Profiles",
+      "badges": "Badges",
+      "design": "Design & Effects",
+      "api": "API",
+      "analytics": "Analytics",
+      "interactions": "Guestbook & Modules",
+      "premium": "Premium",
+      "support": "Support"
+    },
+    "sections": {
+      "account": {
+        "title": "Account & Auth",
+        "items": {
+          "login": {
+            "q": "How do I log in or register?",
+            "a": "Use the login/register links in the header. Accounts are email-based with secure password hashing (Argon2id)."
+          },
+          "password": {
+            "q": "How do I change my password?",
+            "a": "Dashboard → Security tab. For lockouts, use the reset flow from the login screen."
+          },
+          "roles": {
+            "q": "What roles exist?",
+            "a": "Roles include user, premium, and admin. They unlock certain dashboard controls and badges."
+          }
+        }
+      },
+      "profiles": {
+        "title": "Profiles",
+        "items": {
+          "uid": {
+            "q": "What is my UID?",
+            "a": "Each profile has a numeric UID shown in the dashboard and on your page for sharing and API use."
+          },
+          "editing": {
+            "q": "How do I edit my bio and links?",
+            "a": "Dashboard → Profile & Links tabs to change display name, bio, socials, and link order."
+          },
+          "theme": {
+            "q": "How do backgrounds and themes work?",
+            "a": "Dashboard → Design lets you set background images/colors, opacity, and blur for overlays/cards."
+          }
+        }
+      },
+      "badges": {
+        "title": "Badges",
+        "items": {
+          "available": {
+            "q": "Which badges are public?",
+            "a": "hacker, premium, bughunter. Some badges are hidden or awarded for special achievements."
+          },
+          "display": {
+            "q": "Where do badges appear?",
+            "a": "Next to your display name on the bio page and inside API responses."
+          },
+          "styling": {
+            "q": "Can I style badges?",
+            "a": "Premium badge styling (gradient, glow, position) is available in Dashboard → Design → Badge settings."
+          }
+        }
+      },
+      "design": {
+        "title": "Design & Effects",
+        "items": {
+          "effects": {
+            "q": "What visual effects exist?",
+            "a": "Snow, plasma/aurora, stars, scanlines, click-to-enter overlay, custom cursor, and background music."
+          },
+          "music": {
+            "q": "How does music work?",
+            "a": "Add a YouTube or MP3 link. Optional autoplay and volume control; can show a mini badge player on bio."
+          },
+          "layout": {
+            "q": "Can I preview changes?",
+            "a": "Use the dashboard live preview (Design/Effects tabs). Changes apply instantly after save."
+          }
+        }
+      },
+      "api": {
+        "title": "API",
+        "items": {
+          "tokens": {
+            "q": "Where do I get a token?",
+            "a": "Dashboard → API tab. Tokens are bearer strings; rotate them if exposed."
+          },
+          "endpoints": {
+            "q": "Which endpoints are public?",
+            "a": "GET /api/v1/profile/:username, GET /api/v1/users, GET /api/v1/users/trending. Only public fields are returned."
+          },
+          "filters": {
+            "q": "How do I search or filter?",
+            "a": "Use q, badge, hasAvatar, minViews, createdAfter, sort, limit, offset. Trending supports windowDays and badge filters."
+          },
+          "rates": {
+            "q": "What are the rate limits?",
+            "a": "Default 1,000 requests/day per token. Headers: X-RateLimit-Limit, Remaining, Reset."
+          }
+        }
+      },
+      "analytics": {
+        "title": "Analytics",
+        "items": {
+          "tracked": {
+            "q": "What metrics are tracked?",
+            "a": "Unique profile views, link clicks, sessions, and device/referrer metadata."
+          },
+          "freshness": {
+            "q": "How fresh is the data?",
+            "a": "Profile views cache for ~60s with background revalidation. Admin panels aggregate on demand."
+          },
+          "privacy": {
+            "q": "Do you store IP addresses?",
+            "a": "Visitor identifiers are hashed; raw IPs are not stored."
+          }
+        }
+      },
+      "interactions": {
+        "title": "Guestbook & Modules",
+        "items": {
+          "guestbook": {
+            "q": "How does the guestbook work?",
+            "a": "Authenticated users can leave messages on profiles with the guestbook enabled. Messages show author username and avatar."
+          },
+          "toggle": {
+            "q": "Can I disable it?",
+            "a": "Yes. Toggle the guestbook module off in dashboard settings if you do not want messages."
+          },
+          "modules": {
+            "q": "What modules exist?",
+            "a": "Social links, Spotify now playing, music badge, UID display, analytics widgets, and guestbook."
+          }
+        }
+      },
+      "premium": {
+        "title": "Premium",
+        "items": {
+          "what": {
+            "q": "What does premium include?",
+            "a": "Enhanced badge styling, extra design/effect options, and higher customization for your bio."
+          },
+          "activate": {
+            "q": "How do I activate premium?",
+            "a": "Admins can grant premium. If you expect it but do not see it, contact support."
+          }
+        }
+      },
+      "support": {
+        "title": "Support",
+        "items": {
+          "tickets": {
+            "q": "How do I report a problem?",
+            "a": "Open a support ticket with username, steps, and screenshots if possible."
+          },
+          "locales": {
+            "q": "Do you support multiple languages?",
+            "a": "Yes. Switch languages with the language switcher in the header."
+          }
+        }
+      }
+    },
+    "showcase": {
+      "badges": {
+        "title": "Public badges",
+        "items": ["hacker", "premium", "bughunter"]
+      },
+      "effects": {
+        "title": "Visual effects",
+        "items": ["Snow", "Aurora / plasma", "Stars", "Scanlines", "Click-to-enter", "Music", "Custom cursor"]
+      },
+      "modules": {
+        "title": "Modules & widgets",
+        "items": ["Social links", "Spotify", "Music badge", "UID display", "Analytics", "Guestbook"]
+      },
+      "tip": {
+        "title": "Pro tip",
+        "text": "Use the dashboard live preview to test snow, aurora, scanlines, music volume, and click-to-enter overlays. Changes apply instantly!"
+      }
+    },
+    "quickLinks": {
+      "title": "Quick links",
+      "dashboard": "Dashboard",
+      "apiDocs": "API Docs",
+      "support": "Support"
+    },
+    "cta": {
+      "title": "Need something else?",
+      "subtitle": "Open a support ticket or ping us from the dashboard.",
+      "button": "Go to support"
+    }
   }
 }

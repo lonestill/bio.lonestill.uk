@@ -16,7 +16,7 @@ export function Footer() {
             <Heart className="w-4 h-4 text-pink-500 fill-pink-500" />
             <span>{t("by")}</span>
             <Link 
-              href="https://github.com/lonestill" 
+              href="https://bio.lonestill.uk/gitty" 
               target="_blank"
               className="text-purple-400 hover:text-purple-300 transition-colors"
             >
