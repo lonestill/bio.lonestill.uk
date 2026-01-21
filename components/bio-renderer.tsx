@@ -18,7 +18,8 @@ import {
   Code,
   GitBranch,
   Users,
-  Home
+  Home,
+  Music
 } from "lucide-react";
 import Link from "next/link";
 import { SpotifyWidget } from "@/components/spotify-widget";
@@ -389,6 +390,7 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [hasTrackedView, setHasTrackedView] = useState(false);
   const [bioText, setBioText] = useState("");
+  const [musicTitle, setMusicTitle] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const youtubePlayerRef = useRef<any>(null);
@@ -479,6 +481,12 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
           onReady: (event: any) => {
             event.target.setVolume(volume);
             event.target.playVideo();
+
+            // Grab video title for the mini-player badge
+            const data = event.target.getVideoData ? event.target.getVideoData() : null;
+            if (data?.title) {
+              setMusicTitle(data.title as string);
+            }
           },
         },
       });
@@ -524,6 +532,30 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const isYouTubeMusic = musicUrl && getYouTubeVideoId(musicUrl);
   const clickToEnterEnabled = modules.clickToEnter?.enabled !== false;
   const clickToEnterText = modules.clickToEnter?.text || "Click to Enter";
+
+  // Derive a readable title for the mini player
+  useEffect(() => {
+    if (!musicUrl) {
+      setMusicTitle(null);
+      return;
+    }
+
+    if (isYouTubeMusic) {
+      // Will be refined when YT player reports actual metadata
+      setMusicTitle((prev) => prev || "YouTube трек");
+      return;
+    }
+
+    try {
+      const parsed = new URL(musicUrl);
+      const lastPart = parsed.pathname.split("/").filter(Boolean).pop();
+      const niceName = decodeURIComponent(lastPart || parsed.hostname);
+      setMusicTitle(niceName || parsed.hostname);
+    } catch {
+      const fallback = decodeURIComponent(musicUrl.split("/").pop() || musicUrl);
+      setMusicTitle(fallback);
+    }
+  }, [musicUrl, isYouTubeMusic]);
   
   // Effects
   const snowEnabled = modules.effects?.snow || false;
@@ -1007,6 +1039,52 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
           )}
         </AnimatePresence>
       </div>
+
+      {/* Mini music badge */}
+      {isUnlocked && musicUrl && (
+        <div className="fixed top-4 right-4 z-40">
+          <div
+            className="flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-md"
+            style={{
+              backgroundColor: `rgba(0,0,0,0.65)`,
+              borderColor: `${primaryColor}30`,
+            }}
+          >
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center border"
+              style={{
+                borderColor: `${primaryColor}40`,
+                backgroundColor: `${primaryColor}15`,
+              }}
+            >
+              <Music className="w-5 h-5" style={{ color: primaryColor }} />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-mono text-white truncate">
+                {musicTitle || (isYouTubeMusic ? "YouTube трек" : "Музыка")}
+              </div>
+              <div className="text-xs font-mono text-neutral-400 truncate">
+                {(() => {
+                  try {
+                    const url = new URL(musicUrl);
+                    return url.hostname.replace(/^www\./, "");
+                  } catch {
+                    return "audio";
+                  }
+                })()}
+              </div>
+            </div>
+            <a
+              href={musicUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-auto text-xs font-mono text-purple-200 hover:text-white transition-colors"
+            >
+              Открыть
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* Audio */}
       {isUnlocked && musicUrl && !isYouTubeMusic && (

@@ -77,6 +77,9 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
     musicAutoplay: modules.music?.autoplay !== false,
     // Guestbook
     guestbookEnabled: modules.guestbook?.enabled || false,
+    // Click to enter
+    clickToEnterEnabled: modules.clickToEnter?.enabled !== false,
+    clickToEnterText: modules.clickToEnter?.text || "Click to Enter",
   });
 
   useEffect(() => {
@@ -121,6 +124,10 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
       },
       guestbook: {
         enabled: effects.guestbookEnabled,
+      },
+      clickToEnter: {
+        enabled: effects.clickToEnterEnabled,
+        text: effects.clickToEnterText,
       },
     };
     formDataObj.set("modulesJson", JSON.stringify(modulesJson));
@@ -357,6 +364,39 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
             <p className="text-xs font-mono text-neutral-600">
               Поддерживаются MP3 и YouTube ссылки
             </p>
+          </div>
+        </div>
+
+        {/* Click to Enter */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-mono text-neutral-400 flex items-center gap-2">
+            <Play className="w-4 h-4 text-neutral-500" />
+            Экран входа (Click to Enter)
+          </h3>
+
+          <div className="space-y-4 p-4 rounded-xl bg-neutral-900/30 border border-neutral-800">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <div
+                className={`toggle-switch ${effects.clickToEnterEnabled ? "active" : ""}`}
+                onClick={() => setEffects({ ...effects, clickToEnterEnabled: !effects.clickToEnterEnabled })}
+              />
+              <span className="text-sm font-mono text-neutral-300">Показывать экран входа</span>
+            </label>
+
+            <div className="space-y-2">
+              <label className="text-xs font-mono text-neutral-500">Текст кнопки</label>
+              <input
+                type="text"
+                value={effects.clickToEnterText}
+                onChange={(e) => setEffects({ ...effects, clickToEnterText: e.target.value })}
+                disabled={!effects.clickToEnterEnabled}
+                className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono text-sm placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                placeholder="Click to Enter"
+              />
+              <p className="text-xs font-mono text-neutral-600">
+                Экран блокирует контент до клика, помогая избежать автоплея и спойлеров.
+              </p>
+            </div>
           </div>
         </div>
 
