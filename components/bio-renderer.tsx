@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Profile, BadgeType } from "@/db/schema";
+import { marked } from "marked";
 import { 
   Eye, 
   Hash, 
@@ -572,6 +573,22 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const backgroundEffect = modules.backgroundEffect || "";
   const nicknameEffect = modules.nicknameEffect || "none";
   
+  // Check if user is admin for markdown support
+  const isAdmin = userRole === "admin";
+  
+  // Parse markdown for admin users
+  const renderBioText = (text: string) => {
+    if (isAdmin) {
+      try {
+        const html = marked.parse(text, { async: false }) as string;
+        return html;
+      } catch {
+        return text;
+      }
+    }
+    return text;
+  };
+  
   // Display options
   const display = modules.display || {};
   const showUid = display.showUid || false;
@@ -989,18 +1006,34 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
 
                 {/* Bio */}
                 {profile.bioText && (
-                  <motion.p
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                     className="text-base md:text-lg leading-relaxed mb-8"
                     style={{ color: `${textColor}90` }}
                   >
-                    {typewriterEffect ? bioText : profile.bioText}
-                    {typewriterEffect && bioText.length < profile.bioText.length && (
-                      <span className="animate-pulse ml-0.5" style={{ color: primaryColor }}>|</span>
+                    {isAdmin ? (
+                      <div 
+                        className="prose prose-invert max-w-none"
+                        dangerouslySetInnerHTML={{ 
+                          __html: typewriterEffect 
+                            ? renderBioText(bioText) 
+                            : renderBioText(profile.bioText)
+                        }}
+                        style={{
+                          color: `${textColor}90`,
+                        }}
+                      />
+                    ) : (
+                      <>
+                        {typewriterEffect ? bioText : profile.bioText}
+                        {typewriterEffect && bioText.length < profile.bioText.length && (
+                          <span className="animate-pulse ml-0.5" style={{ color: primaryColor }}>|</span>
+                        )}
+                      </>
                     )}
-                  </motion.p>
+                  </motion.div>
                 )}
 
                 {/* Countdown */}

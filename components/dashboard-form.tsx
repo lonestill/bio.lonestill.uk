@@ -52,12 +52,12 @@ export function DashboardForm({ profile }: DashboardFormProps) {
           name="bioText"
           rows={4}
           defaultValue={profile.bioText || ""}
-          maxLength={500}
+          maxLength={1000}
           className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all text-white font-mono placeholder:text-neutral-600 resize-none"
           placeholder="Tell the world about yourself..."
         />
         <p className="text-xs font-mono text-neutral-500 mt-2">
-          {(profile.bioText?.length || 0)}/500 characters
+          {(profile.bioText?.length || 0)}/1000 characters
         </p>
       </div>
 

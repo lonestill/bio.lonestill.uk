@@ -86,7 +86,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const renderPanel = () => {
     switch (activeTab) {
       case "profile":
-        return <ProfilePanel profile={profile} />;
+        return <ProfilePanel profile={profile} userRole={user.role} />;
       case "design":
         return <DesignPanel profile={profile} />;
       case "effects":

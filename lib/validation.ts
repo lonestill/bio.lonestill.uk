@@ -22,7 +22,7 @@ export const loginSchema = z.object({
 
 export const updateProfileSchema = z.object({
   displayName: z.string().max(50, "Display name must be at most 50 characters").optional(),
-  bioText: z.string().max(500, "Bio text must be at most 500 characters").optional(),
+  bioText: z.string().optional(),
   avatarUrl: z
     .string()
     .optional()

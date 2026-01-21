@@ -25,6 +25,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 
 interface ProfilePanelProps {
   profile: Profile;
+  userRole?: string;
 }
 
 const layoutOptions = [
@@ -32,7 +33,7 @@ const layoutOptions = [
   { value: "left", label: "Слева" },
 ];
 
-export function ProfilePanel({ profile }: ProfilePanelProps) {
+export function ProfilePanel({ profile, userRole }: ProfilePanelProps) {
   const [state, formAction] = useActionState(updateProfile, null);
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
@@ -41,6 +42,8 @@ export function ProfilePanel({ profile }: ProfilePanelProps) {
   
   const modules = (profile.modules || {}) as any;
   const display = modules.display || {};
+  const isAdmin = userRole === "admin";
+  const bioMaxLength = isAdmin ? undefined : 500;
   
   const [formData, setFormData] = useState({
     displayName: profile.displayName || "",
@@ -176,19 +179,26 @@ export function ProfilePanel({ profile }: ProfilePanelProps) {
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-mono text-neutral-400">
               <FileText className="w-4 h-4 text-neutral-500" />
-              Описание
+              Описание {isAdmin && <span className="text-xs text-purple-400">(поддержка Markdown)</span>}
             </label>
             <textarea
               value={formData.bioText}
               onChange={(e) => setFormData({ ...formData, bioText: e.target.value })}
               rows={4}
-              maxLength={500}
+              maxLength={bioMaxLength}
               className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all resize-none"
-              placeholder="Расскажите о себе..."
+              placeholder={isAdmin ? "Расскажите о себе... (можно использовать Markdown)" : "Расскажите о себе..."}
             />
-            <div className="flex justify-end">
-              <span className="text-xs font-mono text-neutral-500">
-                {formData.bioText.length}/500
+            <div className="flex justify-between items-center">
+              {isAdmin && (
+                <span className="text-xs font-mono text-neutral-500">
+                  Markdown: **bold**, *italic*, [link](url), ## heading
+                </span>
+              )}
+              <span className={`text-xs font-mono ${isAdmin ? "ml-auto" : ""} ${
+                !isAdmin && formData.bioText.length >= 500 ? "text-red-400" : "text-neutral-500"
+              }`}>
+                {formData.bioText.length}{bioMaxLength ? `/${bioMaxLength}` : ""}
               </span>
             </div>
           </div>

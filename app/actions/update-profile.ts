@@ -43,6 +43,16 @@ export async function updateProfile(
       return { error: "Profile not found" };
     }
 
+    // Get user role
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, session.userId))
+      .get();
+    
+    const userRole = user?.role || "user";
+    const isAdmin = userRole === "admin";
+
     // Handle music URL and effects separately
     const musicUrl = formData.get("musicUrl");
     const musicVolume = formData.get("musicVolume");
@@ -87,11 +97,17 @@ export async function updateProfile(
     const hasAvatarUrl = rawAvatarUrl !== null;
     const hasBackgroundUrl = rawBackgroundUrl !== null;
     
+    // Validate bioText length based on user role
+    const bioText = (rawBioText as string)?.trim() || undefined;
+    if (!isAdmin && bioText && bioText.length > 500) {
+      return { error: "Bio text must be at most 500 characters" };
+    }
+
     // IMPORTANT: Don't pass modules to validation - it may contain invalid data from DB
     // We'll handle modules separately after validation
     const rawData = {
       displayName: (rawDisplayName as string)?.trim() || undefined,
-      bioText: (rawBioText as string)?.trim() || undefined,
+      bioText: bioText,
       avatarUrl: (rawAvatarUrl as string)?.trim() || undefined,
       backgroundUrl: (rawBackgroundUrl as string)?.trim() || undefined,
       themeConfig: rawThemeConfig

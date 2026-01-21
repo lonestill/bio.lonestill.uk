@@ -80,6 +80,8 @@ export default async function UserProfilePage({ params }: PageProps) {
         uniqueViews={uniqueViews}
         userRole={userData.role}
       />
+        userRole={userData.role}
+      />
     </main>
   );
 }
