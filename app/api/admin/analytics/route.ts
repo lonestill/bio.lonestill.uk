@@ -7,6 +7,7 @@ import {
   linkClicks,
   users,
   profiles,
+  sessions,
 } from "@/db/schema";
 import { eq, and, gte, lte, sql, desc, isNotNull } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
