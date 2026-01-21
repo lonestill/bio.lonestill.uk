@@ -35,6 +35,12 @@ export function DashboardSidebar({ username, displayName }: DashboardSidebarProp
           >
             Профиль
           </Link>
+          <Link
+            href="/dashboard/change-password"
+            className="block px-4 py-2 font-mono text-sm text-neutral-300 hover:text-white hover:bg-white/5 rounded transition-colors"
+          >
+            Смена пароля
+          </Link>
           
           <div className="px-4 py-2 text-xs font-mono text-neutral-500 uppercase tracking-wider mt-4 mb-2">
             Кастомизация

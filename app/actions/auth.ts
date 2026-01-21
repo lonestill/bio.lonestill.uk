@@ -4,7 +4,7 @@ import { lucia } from "@/lib/auth";
 import { SESSION_COOKIE_NAME } from "@/lib/auth-config";
 import { db } from "@/db";
 import { users, profiles } from "@/db/schema";
-import { registerSchema, loginSchema } from "@/lib/validation";
+import { registerSchema, loginSchema, changePasswordSchema } from "@/lib/validation";
 import { RESERVED_USERNAMES } from "@/lib/constants";
 import { eq, sql } from "drizzle-orm";
 import { Argon2id } from "oslo/password";
@@ -242,4 +242,76 @@ export async function logout() {
 
   revalidatePath("/");
   redirect("/");
+}
+
+export async function changePassword(
+  prevState: { error: string | null; success: boolean } | null,
+  formData: FormData
+) {
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+    const sessionId = sessionCookie?.value ?? null;
+
+    if (!sessionId) {
+      return { error: "Not authenticated", success: false };
+    }
+
+    const { session, user } = await lucia.validateSession(sessionId);
+    
+    if (!session || !user) {
+      return { error: "Session expired", success: false };
+    }
+
+    // Parse form data
+    const rawData = {
+      currentPassword: formData.get("currentPassword") as string,
+      newPassword: formData.get("newPassword") as string,
+      confirmPassword: formData.get("confirmPassword") as string,
+    };
+
+    // Validate input
+    const result = changePasswordSchema.safeParse(rawData);
+
+    if (!result.success) {
+      return { error: result.error.errors[0].message, success: false };
+    }
+
+    const { currentPassword, newPassword } = result.data;
+
+    // Get user from database
+    const dbUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, user.id))
+      .get();
+
+    if (!dbUser) {
+      return { error: "User not found", success: false };
+    }
+
+    // Verify current password
+    const validPassword = await new Argon2id().verify(dbUser.passwordHash, currentPassword);
+
+    if (!validPassword) {
+      return { error: "Current password is incorrect", success: false };
+    }
+
+    // Hash new password
+    const hashedPassword = await new Argon2id().hash(newPassword);
+
+    // Update password in database
+    await db
+      .update(users)
+      .set({ passwordHash: hashedPassword })
+      .where(eq(users.id, user.id));
+
+    return { error: null, success: true };
+  } catch (error: any) {
+    if (error?.digest === "NEXT_REDIRECT" || error?.message?.includes("NEXT_REDIRECT")) {
+      throw error;
+    }
+    console.error("Error in changePassword function:", error);
+    return { error: error.message || "An unexpected error occurred", success: false };
+  }
 }

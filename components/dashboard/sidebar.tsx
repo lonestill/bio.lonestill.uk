@@ -36,6 +36,7 @@ const navigation = [
   { id: "badges", label: "Бейджи", icon: Award },
   { id: "api", label: "API", icon: Key },
   { id: "analytics", label: "Аналитика", icon: BarChart3 },
+  { id: "security", label: "Безопасность", icon: Shield },
 ];
 
 export function Sidebar({ username, displayName, avatarUrl, userRole }: SidebarProps) {
@@ -99,11 +100,12 @@ export function Sidebar({ username, displayName, avatarUrl, userRole }: SidebarP
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
+            const href = (item as any).href || `/dashboard?tab=${item.id}`;
             
             return (
               <Link
                 key={item.id}
-                href={`/dashboard?tab=${item.id}`}
+                href={href}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-mono transition-all duration-200 group ${
                   isActive
                     ? "bg-purple-600/20 text-purple-400 border border-purple-500/20 shadow-[0_0_15px_rgba(147,51,234,0.15)]"
