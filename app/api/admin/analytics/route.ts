@@ -274,7 +274,7 @@ export async function GET(req: NextRequest) {
     const activeUsers = await db
       .select({ count: sql<number>`COUNT(DISTINCT ${sessions.userId})` })
       .from(sessions)
-      .where(gte(sessions.expiresAt, now))
+      .where(gte(sessions.expiresAt, Date.now()))
       .get();
 
     return NextResponse.json({
