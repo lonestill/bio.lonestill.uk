@@ -170,7 +170,8 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
   };
 
   const selectFrame = (frameId: string) => {
-    const newFrame = frameId === "none" ? null : frameId;
+    // 'none' should persist as literal string so renderer can respect no-frame choice
+    const newFrame = frameId === "none" ? "none" : frameId;
     setActiveFrame(newFrame);
     saveBadgeSettings(visibleBadges, showBadges, newFrame);
   };
@@ -253,9 +254,9 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
           
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {availableFrames.map((frame) => {
-              const isSelected = 
-                (frame.id === "none" && !activeFrame) || 
-                activeFrame === frame.id;
+              const isSelected = frame.id === "none"
+                ? activeFrame === "none"
+                : activeFrame === frame.id;
               
               const colorClasses: Record<string, string> = {
                 neutral: "border-neutral-600 bg-neutral-800/50",
