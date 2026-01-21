@@ -25,6 +25,10 @@ import Link from "next/link";
 import { SpotifyWidget } from "@/components/spotify-widget";
 import { Guestbook } from "@/components/guestbook";
 import { HelloKittyFrame } from "@/components/hello-kitty-frame";
+import { LocalhostFrame } from "@/components/localhost-frame";
+import { HackerFrame } from "@/components/hacker-frame";
+import { BughunterFrame } from "@/components/bughunter-frame";
+import { EarlyAdopterFrame } from "@/components/early-adopter-frame";
 import { UidDisplay } from "@/components/uid-display";
 
 // Normalize URL to ensure it has a protocol
@@ -579,7 +583,8 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   
   // Badge configurations
   const badgeConfigs = modules.badgeConfigs || {};
-  const helloKittyEnabled = badgeConfigs.hello_kitty?.enabled !== false; // По умолчанию включено
+  // Active frame: can be 'hello_kitty', 'localhost', 'hacker', 'bughunter', 'early_adopter', or 'none'
+  const activeFrame = badgeConfigs.activeFrame || null; // null = auto (show first available)
   
   // GitHub settings
   const github = modules.github || {};
@@ -827,13 +832,43 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
                           boxShadow: `0 0 40px ${primaryColor}40`,
                         }}
                       />
-                      {/* Hello Kitty Frame */}
-                      {badges.includes("hello_kitty") && visibleBadges.includes("hello_kitty") && helloKittyEnabled && (
-                        <HelloKittyFrame 
-                          size={typeof window !== 'undefined' && window.innerWidth < 768 ? 112 : 144} 
-                          avatarShape={avatarShape}
-                        />
-                      )}
+                      {/* Avatar Frame based on activeFrame setting */}
+                      {(() => {
+                        const frameSize = typeof window !== 'undefined' && window.innerWidth < 768 ? 112 : 144;
+                        // If activeFrame is 'none', show no frame
+                        if (activeFrame === 'none') return null;
+                        // If activeFrame is set to specific badge, show that frame if user has the badge
+                        if (activeFrame) {
+                          if (activeFrame === 'hello_kitty' && badges.includes('hello_kitty')) {
+                            return <HelloKittyFrame size={frameSize} avatarShape={avatarShape} />;
+                          }
+                          if (activeFrame === 'localhost' && badges.includes('localhost')) {
+                            return <LocalhostFrame size={frameSize} avatarShape={avatarShape} />;
+                          }
+                          if (activeFrame === 'hacker' && badges.includes('hacker')) {
+                            return <HackerFrame size={frameSize} avatarShape={avatarShape} />;
+                          }
+                          if (activeFrame === 'bughunter' && badges.includes('bughunter')) {
+                            return <BughunterFrame size={frameSize} avatarShape={avatarShape} />;
+                          }
+                          if (activeFrame === 'early_adopter' && badges.includes('early_adopter')) {
+                            return <EarlyAdopterFrame size={frameSize} avatarShape={avatarShape} />;
+                          }
+                          return null;
+                        }
+                        // Auto mode: show first available frame (priority order)
+                        const framePriority = ['hello_kitty', 'early_adopter', 'hacker', 'bughunter', 'localhost'] as const;
+                        for (const badge of framePriority) {
+                          if (badges.includes(badge)) {
+                            if (badge === 'hello_kitty') return <HelloKittyFrame size={frameSize} avatarShape={avatarShape} />;
+                            if (badge === 'localhost') return <LocalhostFrame size={frameSize} avatarShape={avatarShape} />;
+                            if (badge === 'hacker') return <HackerFrame size={frameSize} avatarShape={avatarShape} />;
+                            if (badge === 'bughunter') return <BughunterFrame size={frameSize} avatarShape={avatarShape} />;
+                            if (badge === 'early_adopter') return <EarlyAdopterFrame size={frameSize} avatarShape={avatarShape} />;
+                          }
+                        }
+                        return null;
+                      })()}
                     </div>
                   </motion.div>
                 )}

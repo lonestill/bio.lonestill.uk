@@ -12,12 +12,22 @@ import {
   Sparkles,
   Eye,
   EyeOff,
-  Home
+  Home,
+  Frame
 } from "lucide-react";
 import { BadgeType, Profile } from "@/db/schema";
 import { updateProfile } from "@/app/actions/update-profile";
 import { useActionState } from "react";
 import { useRouter } from "next/navigation";
+
+const FRAME_OPTIONS = [
+  { id: "none", name: "Без рамки", emoji: "❌", color: "neutral", badge: null },
+  { id: "hello_kitty", name: "Hello Kitty", emoji: "🐱🎀", color: "pink", badge: "hello_kitty" as BadgeType, description: "Милая рамка с котиком" },
+  { id: "localhost", name: "Localhost", emoji: "💻", color: "green", badge: "localhost" as BadgeType, description: "Терминал хакера" },
+  { id: "hacker", name: "Hacker", emoji: "☠️", color: "cyan", badge: "hacker" as BadgeType, description: "Киберпанк с черепом" },
+  { id: "bughunter", name: "Bug Hunter", emoji: "🐛", color: "red", badge: "bughunter" as BadgeType, description: "Охотник на баги" },
+  { id: "early_adopter", name: "Early Adopter", emoji: "🚀", color: "amber", badge: "early_adopter" as BadgeType, description: "Золотая рамка пионера" },
+];
 
 interface BadgesPanelProps {
   userBadges: BadgeType[];
@@ -98,6 +108,10 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
   
   const modules = (profile.modules || {}) as any;
   const display = modules.display || {};
+  const currentActiveFrame = modules.badgeConfigs?.activeFrame || null;
+  
+  // Frame state
+  const [activeFrame, setActiveFrame] = useState<string | null>(currentActiveFrame);
   
   // If visibleBadges is undefined, show all badges by default
   const [visibleBadges, setVisibleBadges] = useState<BadgeType[]>(
@@ -106,6 +120,12 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
   const [showBadges, setShowBadges] = useState<boolean>(
     display.showBadges !== false
   );
+  
+  // Check which frames user can use
+  const availableFrames = FRAME_OPTIONS.filter(frame => 
+    frame.badge === null || userBadges.includes(frame.badge)
+  );
+  const hasAnyFrameBadge = availableFrames.length > 1;
 
   useEffect(() => {
     if (state?.success) {
@@ -122,7 +142,7 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
     }
   }, [state, router]);
 
-  const saveBadgeSettings = (newVisibleBadges: BadgeType[], newShowBadges: boolean) => {
+  const saveBadgeSettings = (newVisibleBadges: BadgeType[], newShowBadges: boolean, newActiveFrame?: string | null) => {
     setIsSaving(true);
     
     const formDataObj = new FormData();
@@ -138,11 +158,21 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
         visibleBadges: newVisibleBadges,
         showBadges: newShowBadges,
       },
+      badgeConfigs: {
+        ...(modules.badgeConfigs || {}),
+        activeFrame: newActiveFrame !== undefined ? newActiveFrame : activeFrame,
+      },
     };
     formDataObj.set("modulesJson", JSON.stringify(modulesJson));
     formDataObj.set("themeConfig", JSON.stringify(profile.themeConfig || {}));
     
     formAction(formDataObj);
+  };
+
+  const selectFrame = (frameId: string) => {
+    const newFrame = frameId === "none" ? null : frameId;
+    setActiveFrame(newFrame);
+    saveBadgeSettings(visibleBadges, showBadges, newFrame);
   };
 
   const toggleBadgeVisibility = (badgeId: BadgeType) => {
@@ -204,6 +234,62 @@ export function BadgesPanel({ userBadges, username, profile }: BadgesPanelProps)
               className={`toggle-switch ${showBadges ? "active" : ""}`}
               onClick={toggleShowBadges}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Frame Selection */}
+      {hasAnyFrameBadge && (
+        <div className="p-4 rounded-xl bg-neutral-900/30 border border-neutral-800">
+          <div className="flex items-center gap-3 mb-4">
+            <Frame className="w-5 h-5 text-purple-400" />
+            <div>
+              <div className="text-sm font-mono text-neutral-200">Рамка аватара</div>
+              <div className="text-xs font-mono text-neutral-500">
+                Выберите рамку для вашего аватара
+              </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {availableFrames.map((frame) => {
+              const isSelected = 
+                (frame.id === "none" && !activeFrame) || 
+                activeFrame === frame.id;
+              
+              const colorClasses: Record<string, string> = {
+                neutral: "border-neutral-600 bg-neutral-800/50",
+                pink: "border-pink-500 bg-pink-500/20 shadow-pink-500/30",
+                green: "border-green-500 bg-green-500/20 shadow-green-500/30",
+                cyan: "border-cyan-500 bg-cyan-500/20 shadow-cyan-500/30",
+                red: "border-red-500 bg-red-500/20 shadow-red-500/30",
+                amber: "border-amber-500 bg-amber-500/20 shadow-amber-500/30",
+              };
+              
+              return (
+                <button
+                  key={frame.id}
+                  onClick={() => selectFrame(frame.id)}
+                  className={`p-3 rounded-xl border-2 transition-all text-left ${
+                    isSelected 
+                      ? `${colorClasses[frame.color]} shadow-lg` 
+                      : "border-neutral-700 bg-neutral-800/30 hover:border-neutral-600"
+                  }`}
+                >
+                  <div className="text-2xl mb-1">{frame.emoji}</div>
+                  <div className="text-sm font-mono text-neutral-200">{frame.name}</div>
+                  {frame.description && (
+                    <div className="text-xs font-mono text-neutral-500 mt-0.5">{frame.description}</div>
+                  )}
+                  {isSelected && (
+                    <div className="mt-2 flex items-center gap-1 text-xs font-mono text-green-400">
+                      <Check className="w-3 h-3" />
+                      <span>Выбрано</span>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
