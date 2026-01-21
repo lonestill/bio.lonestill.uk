@@ -50,7 +50,7 @@ export function UidDisplay({ uid, username, primaryColor, textColor }: UidDispla
   const [animatingUid, setAnimatingUid] = useState<string[]>([]);
 
   // Detect if this is lonestill and format as hex
-  const isLonestill = username.toLowerCase() === "lonestill";
+  const isLonestill = username.toLowerCase() === "gitty";
 
   // Initialize display UID
   useEffect(() => {
