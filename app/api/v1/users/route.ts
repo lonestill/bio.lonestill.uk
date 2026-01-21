@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
-import { users, profiles, profileViews } from "@/db/schema";
-import { eq, sql, desc } from "drizzle-orm";
+import { users, profiles, profileViews, BadgeType } from "@/db/schema";
+import { and, desc, eq, like, or, sql } from "drizzle-orm";
 import { validateApiToken } from "@/lib/api-auth";
 
 // Cache for 5 minutes
@@ -22,10 +22,50 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 100);
   const offset = parseInt(searchParams.get("offset") || "0");
   const sortBy = searchParams.get("sort") || "views"; // views, created, uid
+  const query = searchParams.get("q")?.trim();
+  const badge = searchParams.get("badge") as BadgeType | null;
+  const hasAvatar = searchParams.get("hasAvatar") === "true";
+  const minViews = parseInt(searchParams.get("minViews") || "0");
+  const createdAfter = searchParams.get("createdAfter")
+    ? new Date(searchParams.get("createdAfter") || "")
+    : null;
 
   try {
+    const filters: any[] = [];
+
+    if (query) {
+      filters.push(
+        or(
+          like(users.username, `%${query}%`),
+          like(profiles.displayName, `%${query}%`)
+        )
+      );
+    }
+
+    if (badge) {
+      filters.push(
+        sql`EXISTS (SELECT 1 FROM json_each(${users.badges}) WHERE json_each.value = ${badge})`
+      );
+    }
+
+    if (hasAvatar) {
+      filters.push(sql`${profiles.avatarUrl} IS NOT NULL`);
+    }
+
+    if (!Number.isNaN(minViews) && minViews > 0) {
+      filters.push(
+        sql`(SELECT COUNT(DISTINCT ${profileViews.visitorHash}) FROM ${profileViews} WHERE ${profileViews.profileUserId} = ${users.id}) >= ${minViews}`
+      );
+    }
+
+    if (createdAfter && !Number.isNaN(createdAfter.getTime())) {
+      filters.push(sql`${users.createdAt} >= ${createdAfter}`);
+    }
+
+    const whereClause = filters.length > 0 ? and(...filters) : undefined;
+
     // Get users with view counts
-    const usersWithViews = await db
+    let usersQuery = db
       .select({
         id: users.id,
         username: users.username,
@@ -41,9 +81,15 @@ export async function GET(request: NextRequest) {
         )`.as("view_count"),
       })
       .from(users)
-      .leftJoin(profiles, eq(users.id, profiles.userId))
+      .leftJoin(profiles, eq(users.id, profiles.userId));
+
+    if (whereClause) {
+      usersQuery = usersQuery.where(whereClause);
+    }
+
+    const usersWithViews = await usersQuery
       .orderBy(
-        sortBy === "created" 
+        sortBy === "created"
           ? desc(users.createdAt)
           : sortBy === "uid"
           ? desc(users.uid)
@@ -54,10 +100,13 @@ export async function GET(request: NextRequest) {
       .all();
 
     // Get total count
-    const totalResult = await db
-      .select({ count: sql<number>`COUNT(*)` })
-      .from(users)
-      .get();
+    let totalQuery = db.select({ count: sql<number>`COUNT(*)` }).from(users);
+
+    if (whereClause) {
+      totalQuery = totalQuery.leftJoin(profiles, eq(users.id, profiles.userId)).where(whereClause);
+    }
+
+    const totalResult = await totalQuery.get();
 
     const total = totalResult?.count || 0;
 
