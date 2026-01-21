@@ -58,6 +58,13 @@ export const profiles = sqliteTable("profiles", {
       snow?: boolean;
       scanlines?: boolean;
       cursor?: string;
+      sakura?: boolean;
+      countdown?: {
+        enabled?: boolean;
+        targetDate?: string;
+        title?: string;
+        layout?: "centered" | "compact";
+      };
     };
     badgeConfigs?: {
       premium?: {

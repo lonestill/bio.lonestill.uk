@@ -71,6 +71,13 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
     cursor: modules.effects?.cursor || "default",
     snow: modules.effects?.snow || false,
     scanlines: modules.effects?.scanlines || false,
+    sakura: modules.effects?.sakura || false,
+    countdown: {
+      enabled: modules.effects?.countdown?.enabled || false,
+      targetDate: modules.effects?.countdown?.targetDate || "",
+      title: modules.effects?.countdown?.title || "Отсчет",
+      layout: (modules.effects?.countdown?.layout || "centered") as "centered" | "compact",
+    },
     // Music settings
     musicUrl: modules.music?.url || "",
     musicVolume: modules.music?.volume || 50,
@@ -116,6 +123,13 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
         cursor: effects.cursor,
         snow: effects.snow,
         scanlines: effects.scanlines,
+        sakura: effects.sakura,
+        countdown: {
+          enabled: effects.countdown.enabled,
+          targetDate: effects.countdown.targetDate,
+          title: effects.countdown.title,
+          layout: effects.countdown.layout,
+        },
       },
       music: {
         url: effects.musicUrl,
@@ -293,6 +307,87 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
                 onClick={() => setEffects({ ...effects, scanlines: !effects.scanlines })}
               />
             </label>
+
+            <label className="flex items-center justify-between p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 cursor-pointer hover:bg-neutral-800/50 transition-colors">
+              <div>
+                <div className="text-sm font-mono text-neutral-200">🌸 Цветочки сакуры</div>
+                <div className="text-xs font-mono text-neutral-500">Падающие лепестки вишни</div>
+              </div>
+              <div
+                className={`toggle-switch ${effects.sakura ? "active" : ""}`}
+                onClick={() => setEffects({ ...effects, sakura: !effects.sakura })}
+              />
+            </label>
+          </div>
+        </div>
+
+        {/* Countdown Settings */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-mono text-neutral-400 flex items-center gap-2">
+            <Zap className="w-4 h-4 text-neutral-500" />
+            Отсчет времени
+          </h3>
+          
+          <div className="space-y-4 p-4 rounded-xl bg-neutral-900/30 border border-neutral-800">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <div
+                className={`toggle-switch ${effects.countdown.enabled ? "active" : ""}`}
+                onClick={() => setEffects({
+                  ...effects,
+                  countdown: { ...effects.countdown, enabled: !effects.countdown.enabled }
+                })}
+              />
+              <span className="text-sm font-mono text-neutral-300">Показывать отсчет</span>
+            </label>
+
+            {effects.countdown.enabled && (
+              <>
+                <div className="space-y-2">
+                  <label className="text-xs font-mono text-neutral-500">Дата и время окончания</label>
+                  <input
+                    type="datetime-local"
+                    value={effects.countdown.targetDate}
+                    onChange={(e) => setEffects({
+                      ...effects,
+                      countdown: { ...effects.countdown, targetDate: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono text-sm placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                  />
+                  {!effects.countdown.targetDate && (
+                    <div className="text-xs text-amber-400">⚠️ Выберите дату и время</div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-mono text-neutral-500">Название отсчета</label>
+                  <input
+                    type="text"
+                    value={effects.countdown.title}
+                    onChange={(e) => setEffects({
+                      ...effects,
+                      countdown: { ...effects.countdown, title: e.target.value }
+                    })}
+                    className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono text-sm placeholder:text-neutral-600 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                    placeholder="Например: До Нового Года"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-mono text-neutral-500">Стиль отсчета</label>
+                  <select
+                    value={effects.countdown.layout}
+                    onChange={(e) => setEffects({
+                      ...effects,
+                      countdown: { ...effects.countdown, layout: e.target.value as "centered" | "compact" }
+                    })}
+                    className="w-full px-4 py-3 rounded-xl bg-neutral-900/50 border border-neutral-800 text-white font-mono text-sm focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                  >
+                    <option value="centered">Большой (по центру)</option>
+                    <option value="compact">Компактный (одна строка)</option>
+                  </select>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

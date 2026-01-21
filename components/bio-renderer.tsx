@@ -30,6 +30,8 @@ import { HackerFrame } from "@/components/hacker-frame";
 import { BughunterFrame } from "@/components/bughunter-frame";
 import { EarlyAdopterFrame } from "@/components/early-adopter-frame";
 import { UidDisplay } from "@/components/uid-display";
+import { SakuraEffect } from "@/components/sakura-effect";
+import { Countdown } from "@/components/countdown";
 
 // Normalize URL to ensure it has a protocol
 function normalizeUrl(url: string): string {
@@ -565,6 +567,8 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
   const snowEnabled = modules.effects?.snow || false;
   const scanlinesEnabled = modules.effects?.scanlines || false;
   const cursorStyle = modules.effects?.cursor || "default";
+  const sakuraEnabled = modules.effects?.sakura || false;
+  const countdownConfig = modules.effects?.countdown;
   const backgroundEffect = modules.backgroundEffect || "";
   const nicknameEffect = modules.nicknameEffect || "none";
   
@@ -752,6 +756,9 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
       {backgroundEffect === "plasma" && <PlasmaEffect />}
       {backgroundEffect === "night" && <NightEffect />}
       {backgroundEffect === "oldtv" && <OldTVEffect />}
+
+      {/* Sakura Effect */}
+      {sakuraEnabled && <SakuraEffect />}
 
       {/* Content */}
       <div className="relative z-10 h-full w-full flex items-center justify-center p-4 md:p-8">
@@ -994,6 +1001,15 @@ export function BioRenderer({ profile, username, numericUid, createdAt, badges =
                       <span className="animate-pulse ml-0.5" style={{ color: primaryColor }}>|</span>
                     )}
                   </motion.p>
+                )}
+
+                {/* Countdown */}
+                {countdownConfig?.enabled && countdownConfig?.targetDate && (
+                  <Countdown
+                    targetDate={countdownConfig.targetDate}
+                    title={countdownConfig.title || "Отсчет"}
+                    layout={countdownConfig.layout || "centered"}
+                  />
                 )}
 
                 {/* Links */}
