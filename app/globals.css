@@ -313,6 +313,11 @@ input[type="color"]::-webkit-color-swatch {
   transform: translateX(20px);
 }
 
+.toggle-switch.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 /* Nickname effect animations */
 @keyframes colorShift {
   0%, 100% { color: #ff0000; }

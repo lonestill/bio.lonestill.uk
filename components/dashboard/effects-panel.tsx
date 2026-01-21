@@ -17,10 +17,12 @@ import {
   Volume2,
   Play,
   MessageSquare,
+  Lock,
 } from "lucide-react";
 
 interface EffectsPanelProps {
   profile: Profile;
+  userRole?: string;
 }
 
 // Эффекты фона - точно такие же как в bio-renderer.tsx
@@ -56,7 +58,7 @@ const cursorStyles = [
   { value: "none", label: "Скрытый" },
 ];
 
-export function EffectsPanel({ profile }: EffectsPanelProps) {
+export function EffectsPanel({ profile, userRole }: EffectsPanelProps) {
   const [state, formAction] = useActionState(updateProfile, null);
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
@@ -64,6 +66,7 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
   const [saveCount, setSaveCount] = useState(0);
   
   const modules = (profile.modules || {}) as any;
+  const isPremiumOrAdmin = userRole === "premium" || userRole === "admin";
   
   const [effects, setEffects] = useState({
     backgroundEffect: modules.backgroundEffect || "",
@@ -308,15 +311,24 @@ export function EffectsPanel({ profile }: EffectsPanelProps) {
               />
             </label>
 
-            <label className="flex items-center justify-between p-4 rounded-xl bg-neutral-900/50 border border-neutral-800 cursor-pointer hover:bg-neutral-800/50 transition-colors">
+            <label className={`flex items-center justify-between p-4 rounded-xl border transition-colors ${
+              isPremiumOrAdmin
+                ? "bg-neutral-900/50 border-neutral-800 cursor-pointer hover:bg-neutral-800/50"
+                : "bg-neutral-900/30 border-neutral-800/50 cursor-not-allowed opacity-60"
+            }`}>
               <div>
                 <div className="text-sm font-mono text-neutral-200">🌸 Цветочки сакуры</div>
-                <div className="text-xs font-mono text-neutral-500">Падающие лепестки вишни</div>
+                <div className="text-xs font-mono text-neutral-500">
+                  {isPremiumOrAdmin ? "Падающие лепестки вишни" : "Только для Premium"}
+                </div>
               </div>
-              <div
-                className={`toggle-switch ${effects.sakura ? "active" : ""}`}
-                onClick={() => setEffects({ ...effects, sakura: !effects.sakura })}
-              />
+              <div className="flex items-center gap-3">
+                {!isPremiumOrAdmin && <Lock className="w-4 h-4 text-neutral-500" />}
+                <div
+                  className={`toggle-switch ${effects.sakura ? "active" : ""} ${!isPremiumOrAdmin ? "disabled" : ""}`}
+                  onClick={() => isPremiumOrAdmin && setEffects({ ...effects, sakura: !effects.sakura })}
+                />
+              </div>
             </label>
           </div>
         </div>

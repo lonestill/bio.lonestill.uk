@@ -90,7 +90,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       case "design":
         return <DesignPanel profile={profile} />;
       case "effects":
-        return <EffectsPanel profile={profile} />;
+        return <EffectsPanel profile={profile} userRole={user.role} />;
       case "links":
         return <LinksPanel profile={profile} />;
       case "connections":

@@ -31,23 +31,26 @@ export function SakuraEffect() {
 
     // Add new petals periodically
     const interval = setInterval(() => {
-      setPetals((prev) => {
-        if (prev.length > 15) {
-          return prev.slice(1);
-        }
-        return [
-          ...prev,
-          {
-            id: nextId,
-            left: Math.random() * 100,
-            delay: 0,
-            duration: 6 + Math.random() * 4,
-            size: 8 + Math.random() * 12,
-            opacity: 0.6 + Math.random() * 0.4,
-          },
-        ];
+      setNextId((prevId) => {
+        const newId = prevId;
+        setPetals((prev) => {
+          if (prev.length > 15) {
+            return prev.slice(1);
+          }
+          return [
+            ...prev,
+            {
+              id: newId,
+              left: Math.random() * 100,
+              delay: 0,
+              duration: 6 + Math.random() * 4,
+              size: 8 + Math.random() * 12,
+              opacity: 0.6 + Math.random() * 0.4,
+            },
+          ];
+        });
+        return newId + 1;
       });
-      setNextId((prev) => prev + 1);
     }, 1200);
 
     return () => clearInterval(interval);
