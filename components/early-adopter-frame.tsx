@@ -24,21 +24,15 @@ export function EarlyAdopterFrame({ size, avatarShape }: EarlyAdopterFrameProps)
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.3, type: "spring", stiffness: 150 }}
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: "linear-gradient(135deg, #fbbf24, #f59e0b, #d97706, #f59e0b, #fbbf24)",
+          border: "3px solid #fbbf24",
           borderRadius: borderRadius,
-          padding: "3px",
+          background: "linear-gradient(135deg, #fbbf24, #f59e0b, #d97706, #f59e0b, #fbbf24)",
+          backgroundClip: "border-box",
+          WebkitBackgroundClip: "padding-box",
         }}
-      >
-        <div
-          className="w-full h-full"
-          style={{
-            backgroundColor: "transparent",
-            borderRadius: borderRadius,
-          }}
-        />
-      </motion.div>
+      />
 
       {/* Glow effect */}
       <motion.div
@@ -50,7 +44,7 @@ export function EarlyAdopterFrame({ size, avatarShape }: EarlyAdopterFrameProps)
           ],
         }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-none"
         style={{
           border: "3px solid transparent",
           borderRadius: borderRadius,
