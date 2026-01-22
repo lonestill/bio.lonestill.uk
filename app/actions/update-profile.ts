@@ -250,14 +250,14 @@ export async function updateProfile(
   console.log("Updated profile modules.music.url:", updatedProfile?.modules?.music?.url);
 
   // Revalidate the profile page
-  const user = await db
+  const userForRevalidate = await db
     .select({ username: users.username })
     .from(users)
     .where(eq(users.id, session.userId))
     .get();
 
-  if (user) {
-    revalidatePath(`/${user.username}`, 'page');
+  if (userForRevalidate) {
+    revalidatePath(`/${userForRevalidate.username}`, 'page');
     revalidatePath('/dashboard', 'page');
   }
 
