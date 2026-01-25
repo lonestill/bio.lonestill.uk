@@ -113,10 +113,10 @@ export function ViewsBoostPanel() {
       return;
     }
 
-    if (numAmount > 1000000) {
+    if (numAmount > 100000000) {
       setMessage({
         type: "error",
-        text: "Максимум 100,000 просмотров за раз",
+        text: "Максимум 100,000,000 просмотров за раз",
       });
       return;
     }
@@ -162,10 +162,10 @@ export function ViewsBoostPanel() {
       return;
     }
 
-    if (numAmount > 1000000) {
+    if (numAmount > 100000000) {
       setMessage({
         type: "error",
-        text: "Максимум 1,000,000 просмотров за раз",
+        text: "Максимум 100,000,000 просмотров за раз",
       });
       return;
     }
