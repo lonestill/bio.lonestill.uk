@@ -564,3 +564,110 @@ export async function getSystemStats() {
     },
   };
 }
+
+// Boost unique views (profile views)
+export async function boostUniqueViews(userId: string, amount: number) {
+  await checkAdminAccess();
+
+  if (amount <= 0) {
+    throw new Error("Количество должно быть больше 0");
+  }
+
+  // Check if user profile exists
+  const profile = await db
+    .select()
+    .from(profiles)
+    .where(eq(profiles.userId, userId))
+    .get();
+
+  if (!profile) {
+    throw new Error("Профиль пользователя не найден");
+  }
+
+  // Generate unique visitor hashes for each view
+  const profileViews_data = Array.from({ length: amount }, (_, i) => ({
+    profileUserId: userId,
+    visitorHash: `admin_boost_${Date.now()}_${i}`,
+    viewedAt: new Date(),
+  }));
+
+  // Insert all views at once
+  await db.insert(profileViews).values(profileViews_data);
+
+  revalidatePath("/admin");
+  return { success: true, amount };
+}
+
+// Boost simple views (profile.views counter)
+export async function boostSimpleViews(userId: string, amount: number) {
+  await checkAdminAccess();
+
+  if (amount <= 0) {
+    throw new Error("Количество должно быть больше 0");
+  }
+
+  // Check if user profile exists
+  const profile = await db
+    .select()
+    .from(profiles)
+    .where(eq(profiles.userId, userId))
+    .get();
+
+  if (!profile) {
+    throw new Error("Профиль пользователя не найден");
+  }
+
+  // Update views counter
+  const newViews = (profile.views || 0) + amount;
+  await db
+    .update(profiles)
+    .set({ views: newViews })
+    .where(eq(profiles.userId, userId));
+
+  revalidatePath("/admin");
+  return { success: true, amount, newTotal: newViews };
+}
+
+// Get profile views details
+export async function getUserViewsDetails(userId: string) {
+  await checkAdminAccess();
+
+  const profile = await db
+    .select({
+      userId: profiles.userId,
+      displayName: profiles.displayName,
+      views: profiles.views,
+    })
+    .from(profiles)
+    .where(eq(profiles.userId, userId))
+    .get();
+
+  if (!profile) {
+    throw new Error("Профиль пользователя не найден");
+  }
+
+  // Get count of unique profile views
+  const uniqueViews = await db
+    .select({ count: sql<number>`COUNT(*)` })
+    .from(profileViews)
+    .where(eq(profileViews.profileUserId, userId))
+    .get();
+
+  // Get recent views
+  const recentViews = await db
+    .select({
+      visitorHash: profileViews.visitorHash,
+      viewedAt: profileViews.viewedAt,
+    })
+    .from(profileViews)
+    .where(eq(profileViews.profileUserId, userId))
+    .orderBy(desc(profileViews.viewedAt))
+    .limit(20);
+
+  return {
+    profile,
+    uniqueViewsCount: uniqueViews?.count || 0,
+    simpleViewsCount: profile.views || 0,
+    recentViews,
+  };
+}

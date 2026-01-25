@@ -15,6 +15,7 @@ import {
   SystemPanel,
   TicketsPanel,
   GlobalAnalyticsPanel,
+  ViewsBoostPanel,
 } from "@/components/admin";
 
 interface PageProps {
@@ -78,6 +79,8 @@ export default async function AdminPage({ searchParams }: PageProps) {
         return <TokensPanel />;
       case "system":
         return <SystemPanel />;
+      case "views-boost":
+        return <ViewsBoostPanel />;
       default:
         return <OverviewPanel />;
     }
