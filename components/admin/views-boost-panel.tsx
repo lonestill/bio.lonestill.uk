@@ -113,17 +113,26 @@ export function ViewsBoostPanel() {
       return;
     }
 
+    if (numAmount > 100000) {
+      setMessage({
+        type: "error",
+        text: "Максимум 100,000 просмотров за раз",
+      });
+      return;
+    }
+
     try {
       setLoading(true);
-      await boostUniqueViews(selectedUserId, numAmount);
+      const result = await boostUniqueViews(selectedUserId, numAmount);
       setMessage({
         type: "success",
-        text: `✓ Добавлено ${numAmount} уникальных просмотров`,
+        text: `✓ Добавлено ${result.inserted || result.amount} уникальных просмотров`,
       });
       setAmount("10");
       // Refresh details
       await loadViewsDetails();
     } catch (error) {
+      console.error("Boost unique views error:", error);
       setMessage({
         type: "error",
         text:
@@ -153,17 +162,26 @@ export function ViewsBoostPanel() {
       return;
     }
 
+    if (numAmount > 1000000) {
+      setMessage({
+        type: "error",
+        text: "Максимум 1,000,000 просмотров за раз",
+      });
+      return;
+    }
+
     try {
       setLoading(true);
-      await boostSimpleViews(selectedUserId, numAmount);
+      const result = await boostSimpleViews(selectedUserId, numAmount);
       setMessage({
         type: "success",
-        text: `✓ Добавлено ${numAmount} просмотров`,
+        text: `✓ Добавлено ${result.amount} просмотров (всего: ${result.newTotal})`,
       });
       setAmount("10");
       // Refresh details
       await loadViewsDetails();
     } catch (error) {
+      console.error("Boost simple views error:", error);
       setMessage({
         type: "error",
         text:

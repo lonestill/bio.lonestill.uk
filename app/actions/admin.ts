@@ -573,6 +573,10 @@ export async function boostUniqueViews(userId: string, amount: number) {
     throw new Error("Количество должно быть больше 0");
   }
 
+  if (amount > 100000) {
+    throw new Error("Максимум 100,000 просмотров за раз");
+  }
+
   // Check if user profile exists
   const profile = await db
     .select()
@@ -584,18 +588,34 @@ export async function boostUniqueViews(userId: string, amount: number) {
     throw new Error("Профиль пользователя не найден");
   }
 
-  // Generate unique visitor hashes for each view
-  const profileViews_data = Array.from({ length: amount }, (_, i) => ({
-    profileUserId: userId,
-    visitorHash: `admin_boost_${Date.now()}_${i}`,
-    viewedAt: new Date(),
-  }));
+  try {
+    // Process in batches to avoid timeout/memory issues
+    const batchSize = 1000;
+    let inserted = 0;
 
-  // Insert all views at once
-  await db.insert(profileViews).values(profileViews_data);
+    for (let batch = 0; batch < Math.ceil(amount / batchSize); batch++) {
+      const batchAmount = Math.min(batchSize, amount - inserted);
+      
+      const profileViews_data = Array.from({ length: batchAmount }, (_, i) => ({
+        profileUserId: userId,
+        visitorHash: `admin_boost_${Date.now()}_${batch}_${i}`,
+        viewedAt: new Date(),
+      }));
 
-  revalidatePath("/admin");
-  return { success: true, amount };
+      await db.insert(profileViews).values(profileViews_data);
+      inserted += batchAmount;
+    }
+
+    revalidatePath("/admin");
+    return { success: true, amount, inserted };
+  } catch (error) {
+    console.error(`[Admin] Error boosting unique views for user ${userId}:`, error);
+    throw new Error(
+      `Ошибка при добавлении просмотров: ${
+        error instanceof Error ? error.message : "Неизвестная ошибка"
+      }`
+    );
+  }
 }
 
 // Boost simple views (profile.views counter)
@@ -606,6 +626,10 @@ export async function boostSimpleViews(userId: string, amount: number) {
     throw new Error("Количество должно быть больше 0");
   }
 
+  if (amount > 1000000) {
+    throw new Error("Максимум 1,000,000 просмотров за раз");
+  }
+
   // Check if user profile exists
   const profile = await db
     .select()
@@ -617,15 +641,24 @@ export async function boostSimpleViews(userId: string, amount: number) {
     throw new Error("Профиль пользователя не найден");
   }
 
-  // Update views counter
-  const newViews = (profile.views || 0) + amount;
-  await db
-    .update(profiles)
-    .set({ views: newViews })
-    .where(eq(profiles.userId, userId));
+  try {
+    // Update views counter
+    const newViews = (profile.views || 0) + amount;
+    await db
+      .update(profiles)
+      .set({ views: newViews })
+      .where(eq(profiles.userId, userId));
 
-  revalidatePath("/admin");
-  return { success: true, amount, newTotal: newViews };
+    revalidatePath("/admin");
+    return { success: true, amount, newTotal: newViews };
+  } catch (error) {
+    console.error(`[Admin] Error boosting simple views for user ${userId}:`, error);
+    throw new Error(
+      `Ошибка при добавлении просмотров: ${
+        error instanceof Error ? error.message : "Неизвестная ошибка"
+      }`
+    );
+  }
 }
 
 // Get profile views details
