@@ -11,9 +11,15 @@ import {
 
 interface User {
   id: string;
+  uid: number | null;
   username: string;
+  email: string | null;
+  role: string;
+  badges: any;
+  createdAt: Date;
   displayName: string | null;
-  views?: number;
+  avatarUrl: string | null;
+  views: number | null;
 }
 
 interface ViewsDetails {
