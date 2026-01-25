@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth-utils";
-import { RegisterForm } from "./register-form";
 
 export default async function RegisterPage() {
   const session = await getSession();
@@ -9,5 +8,6 @@ export default async function RegisterPage() {
     redirect("/dashboard");
   }
   
-  return <RegisterForm />;
+  // Регистрация закрыта - проект закрывается
+  redirect("/");
 }

@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SecretConsole } from "@/components/secret-console";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { ShutdownBanner } from "@/components/shutdown-banner";
 import "@uploadthing/react/styles.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -34,9 +35,12 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans`}>
         <NextIntlClientProvider messages={messages}>
-          <SecretConsole />
-          <AnalyticsTracker enabled={true} />
-          {children}
+          <ShutdownBanner />
+          <div className="pt-20">
+            <SecretConsole />
+            <AnalyticsTracker enabled={true} />
+            {children}
+          </div>
         </NextIntlClientProvider>
       </body>
     </html>

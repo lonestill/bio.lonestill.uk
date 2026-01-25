@@ -67,12 +67,6 @@ export function HeaderClient({ isAuthenticated, currentLocale }: HeaderClientPro
                 >
                   {t("common.login")}
                 </Link>
-                <Link
-                  href="/register"
-                  className="font-mono text-sm px-4 py-2 bg-purple-600/20 border border-purple-500/30 rounded-lg hover:bg-purple-600/30 hover:border-purple-500/50 transition-all hover:shadow-[0_0_15px_rgba(147,51,234,0.3)] text-purple-400"
-                >
-                  {t("header.getStarted")}
-                </Link>
               </>
             )}
           </div>
