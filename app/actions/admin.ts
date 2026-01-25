@@ -573,8 +573,8 @@ export async function boostUniqueViews(userId: string, amount: number) {
     throw new Error("Количество должно быть больше 0");
   }
 
-  if (amount > 100000) {
-    throw new Error("Максимум 100,000 просмотров за раз");
+  if (amount > 50000) {
+    throw new Error("Максимум 50,000 просмотров за раз");
   }
 
   // Check if user profile exists
@@ -590,26 +590,39 @@ export async function boostUniqueViews(userId: string, amount: number) {
 
   try {
     // Process in batches to avoid timeout/memory issues
-    const batchSize = 1000;
+    // Use smaller batch size (250) for SQLite stability
+    const batchSize = 250;
     let inserted = 0;
+    const startTime = Date.now();
 
     for (let batch = 0; batch < Math.ceil(amount / batchSize); batch++) {
       const batchAmount = Math.min(batchSize, amount - inserted);
       
-      const profileViews_data = Array.from({ length: batchAmount }, (_, i) => ({
-        profileUserId: userId,
-        visitorHash: `admin_boost_${Date.now()}_${batch}_${i}`,
-        viewedAt: new Date(),
-      }));
+      // Generate data more efficiently
+      const profileViews_data = Array.from({ length: batchAmount }, (_, i) => {
+        const uniqueId = `${startTime}_${batch}_${i}`;
+        return {
+          profileUserId: userId,
+          visitorHash: `admin_boost_${uniqueId}`,
+          viewedAt: new Date(),
+        };
+      });
 
       await db.insert(profileViews).values(profileViews_data);
       inserted += batchAmount;
+
+      // Log progress
+      console.log(
+        `[Admin] Boost views: ${inserted}/${amount} for user ${userId}`
+      );
     }
 
     revalidatePath("/admin");
     return { success: true, amount, inserted };
   } catch (error) {
-    console.error(`[Admin] Error boosting unique views for user ${userId}:`, error);
+    console.error(
+      `[Admin] Error boosting unique views for user ${userId}: ${error}`
+    );
     throw new Error(
       `Ошибка при добавлении просмотров: ${
         error instanceof Error ? error.message : "Неизвестная ошибка"
